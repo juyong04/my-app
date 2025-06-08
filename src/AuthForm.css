@@ -1,0 +1,138 @@
+/* 로그인 & 회원가입 공통 폼 스타일 */
+
+.auth-container {
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.auth-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.auth-button:hover {
+  background-color: #333;
+}
+
+.auth-subtext {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+}
+
+.auth-link button {
+  background-color: #ccc;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+/* MyPage 공통 레이아웃 */
+.mypage-container {
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+}
+
+/* 정보 표시 카드 */
+.mypage-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 프로필 섹션 */
+.mypage-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  background-color: #eee;
+}
+
+.mypage-header h3 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.mypage-header .student-id {
+  font-size: 14px;
+  color: #777;
+}
+
+/* 정보 리스트 */
+.info-list {
+  margin-top: 20px;
+}
+
+.info-item {
+  font-size: 16px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  border-left: 4px solid #1e90ff;
+  background-color: #f8f9ff;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+/* 입력 필드 커스터마이징 */
+.mypage-box input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+.mypage-box input:focus {
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+}
+
+/* 버튼은 기존 auth-button 스타일 사용 가능 */

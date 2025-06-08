@@ -7,7 +7,7 @@ function BottomNav({ activePage, setActivePage }) {
     { id: 'groupbuy', label: '공동구매' },
     { id: 'groupdelivery', label: '공동배달' },
     { id: 'history', label: '거래내역' },
-    { id: 'profile', label: '내정보' }
+    { id: 'mypage', label: '내정보' }  // ✅ 여기 고침
   ];
 
   return (
