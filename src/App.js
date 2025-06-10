@@ -34,6 +34,7 @@ import GroupbuyDetailPage from './Pages/GroupbuyDetailPage';
 import GroupdeliveryPostPage from './Pages/GroupdeliveryPostPage';
 import GroupdeliveryListPage from './Pages/GroupdeliveryListPage';
 import GroupdeliveryDetailPage from './Pages/GroupdeliveryDetailPage';
+import GroupbuyHistoryPage from './Pages/GroupbuyHistoryPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -197,6 +198,7 @@ function App() {
           />
         )}
 
+        {activePage === 'history' && <GroupbuyHistoryPage />}
         {activePage === 'mypage' && <MyPage />}
       </div>
 

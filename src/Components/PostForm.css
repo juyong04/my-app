@@ -10,10 +10,13 @@
   font-size: 14px;
   font-weight: 500;
   color: #333;
+  margin-bottom: 8px;
 }
 
 .post-form input,
-.post-form textarea {
+.post-form textarea,
+.post-form select,
+.post-form button[type="button"] {
   margin-top: 6px;
   padding: 10px;
   font-size: 14px;
@@ -24,11 +27,27 @@
 }
 
 .post-form input:focus,
-.post-form textarea:focus {
+.post-form textarea:focus,
+.post-form select:focus {
   border-color: #1e90ff;
   box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
 }
 
+/* 지도에서 선택 버튼 스타일 추가 */
+.post-form button[type="button"] {
+  background-color: #eee;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.post-form button[type="button"]:hover {
+  background-color: #ddd;
+}
+
+/* 제출 버튼 */
 .post-form button[type="submit"] {
   padding: 12px;
   font-size: 16px;

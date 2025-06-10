@@ -3,7 +3,10 @@ import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import PostForm from '../Components/PostForm';
 
+
+
 function GroupbuyPostPage({ goBack }) {
+  
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [title, setTitle] = useState('');
@@ -14,6 +17,7 @@ function GroupbuyPostPage({ goBack }) {
   const [totalPrice, setTotalPrice] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
+  const [locationDetail, setLocationDetail] = useState(''); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +31,7 @@ function GroupbuyPostPage({ goBack }) {
         totalPrice,
         description,
         location,
+        locationDetail,
         imageUrl: '', // 추후 firebase storage 적용 가능
         localImageUrl: previewUrl || '',
         currentPeople: 0,
@@ -66,6 +71,8 @@ function GroupbuyPostPage({ goBack }) {
         setDescription={setDescription}
         location={location}
         setLocation={setLocation}
+        locationDetail={locationDetail}
+        setLocationDetail={setLocationDetail} 
       />
     </div>
   );

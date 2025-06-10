@@ -14,6 +14,7 @@ function GroupdeliveryPostPage({ goBack }) {
   const [minute, setMinute] = useState('00');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
+  const [locationDetail, setLocationDetail] = useState(''); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +34,7 @@ function GroupdeliveryPostPage({ goBack }) {
         deadline,
         description,
         location,
+        locationDetail,
         imageUrl: '',
         localImageUrl: previewUrl || '',
         createdAt: Timestamp.now(),
@@ -71,6 +73,8 @@ function GroupdeliveryPostPage({ goBack }) {
         setDescription={setDescription}
         location={location}
         setLocation={setLocation}
+        locationDetail={locationDetail}
+        setLocationDetail={setLocationDetail} 
       />
     </div>
   );

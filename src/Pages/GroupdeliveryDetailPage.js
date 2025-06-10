@@ -38,7 +38,7 @@ function GroupdeliveryDetailPage({ post, goBack }) {
       <p><strong>마감일:</strong> {post.deadline.replace('T', ' ')}</p>
       <p><strong>최소 주문 금액:</strong> {post.minOrderPrice} 원</p>
       <p><strong>배달비:</strong> {post.deliveryFee} 원</p>
-      <p><strong>거래 위치:</strong> {post.location}</p>
+      <p><strong>거래 위치:</strong> {post.location} {post.locationDetail}</p>
       <p><strong>설명:</strong><br />{post.description}</p>
 
       {auth.currentUser?.uid === post.uid && (
