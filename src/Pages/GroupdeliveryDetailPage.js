@@ -2,6 +2,7 @@
 import React from 'react';
 import { auth, db } from '../firebase';
 import { doc, deleteDoc } from 'firebase/firestore';
+import KakaoMapSearch from '../Components/KaKaoMapSearch.js';
 
 function GroupdeliveryDetailPage({ post, goBack }) {
   const handleEdit = () => {
@@ -22,6 +23,8 @@ function GroupdeliveryDetailPage({ post, goBack }) {
     }
   };
 
+
+
   return (
     <div style={{ padding: '20px' }}>
       <button onClick={goBack} style={{ marginBottom: '10px' }}>← 목록으로</button>
@@ -39,6 +42,8 @@ function GroupdeliveryDetailPage({ post, goBack }) {
       <p><strong>최소 주문 금액:</strong> {post.minOrderPrice} 원</p>
       <p><strong>배달비:</strong> {post.deliveryFee} 원</p>
       <p><strong>거래 위치:</strong> {post.location} {post.locationDetail}</p>
+      <KakaoMapSearch location={post.location}/>
+
       <p><strong>설명:</strong><br />{post.description}</p>
 
       {auth.currentUser?.uid === post.uid && (

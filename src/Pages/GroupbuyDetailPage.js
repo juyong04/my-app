@@ -2,6 +2,8 @@
 import React from 'react';
 import { auth, db } from '../firebase';
 import { doc, deleteDoc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
+import KakaoMapSearch from '../Components/KaKaoMapSearch.js';
+
 
 function GroupbuyDetailPage({ post, goBack }) {
   const perPersonPrice = Math.floor(Number(post.totalPrice.replace(/,/g, '')) / Number(post.goalPeople)).toLocaleString();
@@ -63,6 +65,8 @@ function GroupbuyDetailPage({ post, goBack }) {
 
   const isAuthor = auth.currentUser?.uid === post.uid;
 
+
+
   return (
     <div style={{ padding: '20px' }}>
       <button onClick={goBack} style={{ marginBottom: '10px' }}>← 목록으로</button>
@@ -83,6 +87,9 @@ function GroupbuyDetailPage({ post, goBack }) {
       <p><strong>1인당 금액:</strong> {perPersonPrice} 원</p>
       <p><strong>거래 위치:</strong> {post.location} {post.locationDetail}</p>
 
+      
+
+      <KakaoMapSearch location={post.location}/>
 
       <p><strong>설명:</strong><br />{post.description}</p>
 
