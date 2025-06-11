@@ -34,7 +34,9 @@ import GroupbuyDetailPage from './Pages/GroupbuyDetailPage';
 import GroupdeliveryPostPage from './Pages/GroupdeliveryPostPage';
 import GroupdeliveryListPage from './Pages/GroupdeliveryListPage';
 import GroupdeliveryDetailPage from './Pages/GroupdeliveryDetailPage';
-import GroupbuyHistoryPage from './Pages/GroupbuyHistoryPage';
+import ParticipationHistoryPage from './Pages/ParticipationHistoryPage';
+
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -197,8 +199,10 @@ function App() {
             goBack={() => setActivePage('groupdelivery')}
           />
         )}
+        
+        {activePage === 'history' && <ParticipationHistoryPage />}
 
-        {activePage === 'history' && <GroupbuyHistoryPage />}
+
         {activePage === 'mypage' && <MyPage />}
       </div>
 
