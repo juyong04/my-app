@@ -9,12 +9,15 @@ function GroupdeliveryPostPage({ goBack }) {
   const [title, setTitle] = useState('');
   const [minOrderPrice, setMinOrderPrice] = useState('');
   const [deliveryFee, setDeliveryFee] = useState('');
-  const [date, setDate] = useState(''); // ✅ 날짜 입력 추가
+  const [date, setDate] = useState('');
   const [hour, setHour] = useState('00');
   const [minute, setMinute] = useState('00');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
-  const [locationDetail, setLocationDetail] = useState(''); 
+  const [locationDetail, setLocationDetail] = useState('');
+  const [meetTimeDate, setMeetTimeDate] = useState('');
+  const [meetHour, setMeetHour] = useState('00');
+  const [meetMinute, setMeetMinute] = useState('00');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +28,7 @@ function GroupdeliveryPostPage({ goBack }) {
     }
 
     const deadline = `${date}T${hour}:${minute}`;
+    const meetTime = `${meetTimeDate}T${meetHour}:${meetMinute}`;
 
     try {
       await addDoc(collection(db, 'groupdeliveries'), {
@@ -32,6 +36,7 @@ function GroupdeliveryPostPage({ goBack }) {
         minOrderPrice,
         deliveryFee,
         deadline,
+        meetTime,
         description,
         location,
         locationDetail,
@@ -63,7 +68,7 @@ function GroupdeliveryPostPage({ goBack }) {
         setMinOrderPrice={setMinOrderPrice}
         deliveryFee={deliveryFee}
         setDeliveryFee={setDeliveryFee}
-        date={date} // ✅ 전달
+        date={date}
         setDate={setDate}
         hour={hour}
         setHour={setHour}
@@ -74,7 +79,13 @@ function GroupdeliveryPostPage({ goBack }) {
         location={location}
         setLocation={setLocation}
         locationDetail={locationDetail}
-        setLocationDetail={setLocationDetail} 
+        setLocationDetail={setLocationDetail}
+        meetTimeDate={meetTimeDate}
+        setMeetTimeDate={setMeetTimeDate}
+        meetHour={meetHour}
+        setMeetHour={setMeetHour}
+        meetMinute={meetMinute}
+        setMeetMinute={setMeetMinute}
       />
     </div>
   );

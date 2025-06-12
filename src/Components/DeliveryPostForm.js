@@ -1,7 +1,7 @@
 // DeliveryPostForm.js
 import React from 'react';
+import KakaoMap from './KakaoMap';
 import './PostForm.css';
-import { ImageUpload, DateTimePicker, LocationInput } from './UnifiedPostForms';
 
 function DeliveryPostForm({
   onSubmit,
@@ -25,14 +25,23 @@ function DeliveryPostForm({
   setLocation,
   locationDetail,
   setLocationDetail,
+  meetTimeDate,
+  setMeetTimeDate,
+  meetHour,
+  setMeetHour,
+  meetMinute,
+  setMeetMinute
 }) {
   return (
     <form onSubmit={onSubmit} className="post-form">
-      <ImageUpload image={image} setImage={setImage} />
+      <label>
+        대표 이미지
+        <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+      </label>
 
       <label>
         배달 제목*
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       </label>
 
       <label>
@@ -45,6 +54,7 @@ function DeliveryPostForm({
             const formatted = Number(onlyNums).toLocaleString();
             setMinOrderPrice(formatted);
           }}
+          required
         />
       </label>
 
@@ -58,22 +68,76 @@ function DeliveryPostForm({
             const formatted = Number(onlyNums).toLocaleString();
             setDeliveryFee(formatted);
           }}
+          required
         />
       </label>
 
-      <DateTimePicker date={date} setDate={setDate} hour={hour} setHour={setHour} minute={minute} setMinute={setMinute} />
+      {/* 마감 시각 */}
+      <label>
+        모집 마감 일시
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+          <select value={hour} onChange={(e) => setHour(e.target.value)}>
+            {Array.from({ length: 24 }, (_, i) => (
+              <option key={i} value={String(i).padStart(2, '0')}>
+                {String(i).padStart(2, '0')}
+              </option>
+            ))}
+          </select>
+          :
+          <select value={minute} onChange={(e) => setMinute(e.target.value)}>
+            {['00', '15', '30', '45'].map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+      </label>
 
       <label>
         상세 설명
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
       </label>
 
-      <LocationInput
-        location={location}
-        setLocation={setLocation}
-        locationDetail={locationDetail}
-        setLocationDetail={setLocationDetail}
-      />
+      {/* 지도 선택 */}
+      <KakaoMap onLocationSelect={(selected) => setLocation(selected)} />
+
+      {/* 선택된 장소 */}
+      {location && (
+        <p style={{ fontSize: '14px', marginTop: '8px' }}>
+          ✅ 선택된 장소: <strong>{location}</strong>
+        </p>
+      )}
+
+      {/* 상세 위치 입력 */}
+      <label>
+        상세 위치
+        <input value={locationDetail} onChange={(e) => setLocationDetail(e.target.value)} />
+      </label>
+
+      {/* 만날 시각 */}
+      <label>
+        거래 일시
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <input type="date" value={meetTimeDate} onChange={(e) => setMeetTimeDate(e.target.value)} required />
+          <select value={meetHour} onChange={(e) => setMeetHour(e.target.value)}>
+            {Array.from({ length: 24 }, (_, i) => (
+              <option key={i} value={String(i).padStart(2, '0')}>
+                {String(i).padStart(2, '0')}
+              </option>
+            ))}
+          </select>
+          :
+          <select value={meetMinute} onChange={(e) => setMeetMinute(e.target.value)}>
+            {['00', '15', '30', '45'].map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+      </label>
 
       <button type="submit">등록하기</button>
     </form>
