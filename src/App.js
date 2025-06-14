@@ -1,14 +1,17 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { NotificationProvider } from './Context/NotificationContext';
+import GlobalNotification from './Components/GlobalNotification';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './firebase';
 
 import {
   collection,
   onSnapshot,
   query,
   orderBy,
-  doc,
-  getDoc,
 } from 'firebase/firestore';
 import {
   onAuthStateChanged,
@@ -16,7 +19,7 @@ import {
   signOut,
   inMemoryPersistence,
 } from 'firebase/auth';
-import { auth, db } from './firebase';
+import { auth } from './firebase';
 
 import BottomNav from './Layout/nav';
 import FloatingButton from './Layout/FloatingButton';
@@ -48,6 +51,7 @@ function App() {
   const [groupdeliveryPosts, setGroupdeliveryPosts] = useState([]);
   const [selectedGroupbuyPost, setSelectedGroupbuyPost] = useState(null);
   const [selectedGroupdeliveryPost, setSelectedGroupdeliveryPost] = useState(null);
+
 
   useEffect(() => {
     setPersistence(auth, inMemoryPersistence).then(() => {
@@ -108,6 +112,38 @@ function App() {
     setAuthPage('login');
   };
 
+  const handleNavigate = (type, postId) => {
+    if (type === 'delivery') {
+      const fetchDeliveryPost = async () => {
+        try {
+          const postRef = doc(db, 'groupdeliveries', postId);
+          const postSnap = await getDoc(postRef);
+          if (postSnap.exists()) {
+            setSelectedGroupdeliveryPost({ ...postSnap.data(), id: postSnap.id });
+            setActivePage('groupdelivery-detail');
+          }
+        } catch (err) {
+          console.error('공동배달 정보 불러오기 실패:', err);
+        }
+      };
+      fetchDeliveryPost();
+    } else {
+      const fetchBuyPost = async () => {
+        try {
+          const postRef = doc(db, 'groupbuys', postId);
+          const postSnap = await getDoc(postRef);
+          if (postSnap.exists()) {
+            setSelectedGroupbuyPost({ ...postSnap.data(), id: postSnap.id });
+            setActivePage('groupbuy-detail');
+          }
+        } catch (err) {
+          console.error('공동구매 정보 불러오기 실패:', err);
+        }
+      };
+      fetchBuyPost();
+    }
+  };
+
   if (loadingAuth) {
     return <p style={{ padding: '20px' }}>🔐 로그인 상태 확인 중...</p>;
   }
@@ -124,92 +160,97 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <button
-        onClick={handleLogout}
-        style={{
-          position: 'fixed',
-          top: 10,
-          right: 10,
-          zIndex: 1000,
-          background: '#eee',
-          border: 'none',
-          padding: '6px 12px',
-          borderRadius: '6px',
-        }}
-      >
-        로그아웃
-      </button>
-
-      <div className="content">
-        {activePage === 'home' && (
-          <HomePage
-            groupbuyPosts={groupbuyPosts}
-            groupdeliveryPosts={groupdeliveryPosts}
-            onSelect={(post) => {
-              if (post.type === 'groupbuy') {
-                setSelectedGroupbuyPost(post);
-                setActivePage('groupbuy-detail');
-              } else if (post.type === 'groupdelivery') {
-                setSelectedGroupdeliveryPost(post);
-                setActivePage('groupdelivery-detail');
-              }
+    <NotificationProvider>
+      <Router>
+        <GlobalNotification onNavigate={handleNavigate} />
+        <div className="App">
+          <button
+            onClick={handleLogout}
+            style={{
+              position: 'fixed',
+              top: 10,
+              right: 10,
+              zIndex: 1000,
+              background: '#eee',
+              border: 'none',
+              padding: '6px 12px',
+              borderRadius: '6px',
             }}
-          />
-        )}
+          >
+            로그아웃
+          </button>
 
-        {activePage === 'groupbuy' && (
-          <GroupbuyListPage
-            posts={groupbuyPosts}
-            onSelect={(post) => {
-              setSelectedGroupbuyPost(post);
-              setActivePage('groupbuy-detail');
-            }}
-          />
-        )}
+          <div className="content">
+            {activePage === 'home' && (
+              <HomePage
+                groupbuyPosts={groupbuyPosts}
+                groupdeliveryPosts={groupdeliveryPosts}
+                onSelect={(post) => {
+                  if (post.type === 'groupbuy') {
+                    setSelectedGroupbuyPost(post);
+                    setActivePage('groupbuy-detail');
+                  } else if (post.type === 'groupdelivery') {
+                    setSelectedGroupdeliveryPost(post);
+                    setActivePage('groupdelivery-detail');
+                  }
+                }}
+              />
+            )}
 
-        {activePage === 'groupbuy-post' && (
-          <GroupbuyPostPage goBack={() => setActivePage('groupbuy')} />
-        )}
+            {activePage === 'groupbuy' && (
+              <GroupbuyListPage
+                posts={groupbuyPosts}
+                onSelect={(post) => {
+                  setSelectedGroupbuyPost(post);
+                  setActivePage('groupbuy-detail');
+                }}
+              />
+            )}
 
-        {activePage === 'groupbuy-detail' && selectedGroupbuyPost && (
-          <GroupbuyDetailPage
-            post={selectedGroupbuyPost}
-            goBack={() => setActivePage('groupbuy')}
-          />
-        )}
+            {activePage === 'groupbuy-post' && (
+              <GroupbuyPostPage goBack={() => setActivePage('groupbuy')} />
+            )}
 
-        {activePage === 'groupdelivery' && (
-          <GroupdeliveryListPage
-            posts={groupdeliveryPosts}
-            onSelect={(post) => {
-              setSelectedGroupdeliveryPost(post);
-              setActivePage('groupdelivery-detail');
-            }}
-          />
-        )}
+            {activePage === 'groupbuy-detail' && selectedGroupbuyPost && (
+              <GroupbuyDetailPage
+                post={selectedGroupbuyPost}
+                goBack={() => setActivePage('groupbuy')}
+              />
+            )}
 
-        {activePage === 'groupdelivery-post' && (
-          <GroupdeliveryPostPage goBack={() => setActivePage('groupdelivery')} />
-        )}
+            {activePage === 'groupdelivery' && (
+              <GroupdeliveryListPage
+                posts={groupdeliveryPosts}
+                onSelect={(post) => {
+                  setSelectedGroupdeliveryPost(post);
+                  setActivePage('groupdelivery-detail');
+                }}
+              />
+            )}
 
-        {activePage === 'groupdelivery-detail' && selectedGroupdeliveryPost && (
-          <GroupdeliveryDetailPage
-            post={selectedGroupdeliveryPost}
-            goBack={() => setActivePage('groupdelivery')}
-          />
-        )}
-        
-        {activePage === 'history' && <ParticipationHistoryPage />}
+            {activePage === 'groupdelivery-post' && (
+              <GroupdeliveryPostPage goBack={() => setActivePage('groupdelivery')} />
+            )}
+
+            {activePage === 'groupdelivery-detail' && selectedGroupdeliveryPost && (
+              <GroupdeliveryDetailPage
+                post={selectedGroupdeliveryPost}
+                goBack={() => setActivePage('groupdelivery')}
+              />
+            )}
+            
+            {activePage === 'history' && <ParticipationHistoryPage />}
 
 
-        {activePage === 'mypage' && <MyPage />}
-      </div>
+            {activePage === 'mypage' && <MyPage />}
+          </div>
 
-      <FloatingMenu visible={menuVisible} onSelect={handleMenuSelect} />
-      <FloatingButton onClick={handleFloatingClick} />
-      <BottomNav activePage={activePage} setActivePage={setActivePage} />
-    </div>
+          <FloatingMenu visible={menuVisible} onSelect={handleMenuSelect} />
+          <FloatingButton onClick={handleFloatingClick} />
+          <BottomNav activePage={activePage} setActivePage={setActivePage} />
+        </div>
+      </Router>
+    </NotificationProvider>
   );
 }
 
