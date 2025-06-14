@@ -1,4 +1,3 @@
-// GroupdeliveryDetailPage.js - 수정 버튼 제거됨 & 참여 양식 포함
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import {
@@ -9,71 +8,45 @@ import {
   arrayUnion,
   addDoc,
   collection,
-  query,
-  where,
-  getDocs,
 } from 'firebase/firestore';
 import KakaoMapSearch from '../Components/KaKaoMapSearch.js';
-import DeadlinePopup from '../Components/DeadlinePopup';
 
 function GroupdeliveryDetailPage({ post, goBack }) {
-  const [deadlinePopup, setDeadlinePopup] = useState({
-    isOpen: false,
-    meetTime: '',
-    title: '',
-    postId: '',
-    type: 'delivery'
-  });
-  const [isParticipant, setIsParticipant] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [menu, setMenu] = useState('');
   const [price, setPrice] = useState('');
   const [depositor, setDepositor] = useState('');
+  const [authorInfo, setAuthorInfo] = useState(null);
+  const [perPersonFee, setPerPersonFee] = useState(null);
 
   useEffect(() => {
-    const checkParticipation = async () => {
-      if (!auth.currentUser) return;
-      
+    const fetchAuthorInfo = async () => {
       try {
-        const q = query(
-          collection(db, 'groupdeliveryParticipants'),
-          where('userId', '==', auth.currentUser.uid),
-          where('postId', '==', post.id)
-        );
-        const querySnapshot = await getDocs(q);
-        setIsParticipant(!querySnapshot.empty);
-      } catch (error) {
-        console.error('참여 여부 확인 실패:', error);
+        const userRef = doc(db, 'users', post.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setAuthorInfo(userSnap.data());
+        }
+      } catch (err) {
+        console.error('작성자 정보 불러오기 실패:', err);
       }
     };
 
-    checkParticipation();
-  }, [post.id]);
+    const calculateFeeSplit = () => {
+      const participantCount = (post.currentPeople || 0) + 1; // 작성자 포함
+      const deliveryFee = parseInt(post.deliveryFee || '0');
+      const perPerson = Math.ceil(deliveryFee / participantCount);
+      setPerPersonFee(perPerson);
+    };
 
-  const handleOpenDeadlinePopup = () => {
-    setDeadlinePopup({
-      isOpen: true,
-      meetTime: post.meetTime?.replace('T', ' '),
-      title: post.title,
-      postId: post.id,
-      type: 'delivery'
-    });
-  };
-
-  const handleCloseDeadlinePopup = () => {
-    setDeadlinePopup({
-      isOpen: false,
-      meetTime: '',
-      title: '',
-      postId: '',
-      type: 'delivery'
-    });
-  };
+    if (post?.uid) {
+      fetchAuthorInfo();
+      calculateFeeSplit();
+    }
+  }, [post]);
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm('정말 삭제하시겠습니까?');
-    if (!confirmDelete) return;
-
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
       await deleteDoc(doc(db, 'groupdeliveries', post.id));
       alert('삭제되었습니다.');
@@ -84,37 +57,20 @@ function GroupdeliveryDetailPage({ post, goBack }) {
   };
 
   const handleJoin = async () => {
-    if (!auth.currentUser) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    if (!menu || !price || !depositor) {
-      alert('모든 항목을 입력해주세요.');
-      return;
-    }
-
-    const postRef = doc(db, 'groupdeliveries', post.id);
-    const postSnap = await getDoc(postRef);
-    const postData = postSnap.data();
-
-    if (!postData) return;
-
-    const now = new Date();
-    const deadline = new Date(postData.deadline);
-
-    if (now > deadline) {
-      alert('이미 마감된 모집입니다.');
-      return;
-    }
-
-    const participants = postData.participants || [];
-    if (participants.includes(auth.currentUser.uid)) {
-      alert('이미 참여한 글입니다.');
-      return;
-    }
+    if (!auth.currentUser) return alert('로그인이 필요합니다.');
+    if (!menu || !price || !depositor) return alert('모든 항목을 입력해주세요.');
 
     try {
+      const postRef = doc(db, 'groupdeliveries', post.id);
+      const postSnap = await getDoc(postRef);
+      const postData = postSnap.data();
+      if (!postData) return;
+
+      if (new Date() > new Date(postData.deadline)) return alert('이미 마감된 모집입니다.');
+      if ((postData.participants || []).includes(auth.currentUser.uid)) {
+        return alert('이미 참여한 글입니다.');
+      }
+
       await updateDoc(postRef, {
         participants: arrayUnion(auth.currentUser.uid),
         currentPeople: (postData.currentPeople || 0) + 1,
@@ -141,10 +97,6 @@ function GroupdeliveryDetailPage({ post, goBack }) {
   };
 
   const isAuthor = auth.currentUser?.uid === post.uid;
-  const isDeadlinePassed = new Date() > new Date(post.deadline);
-  const perPersonPrice = post.totalPrice && post.goalPeople ? 
-    Math.floor(Number(post.totalPrice.replace(/,/g, '')) / Number(post.goalPeople)).toLocaleString() : 
-    '0';
 
   return (
     <>
@@ -158,17 +110,40 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           <img
             src={post.localImageUrl}
             alt="미리보기"
-            style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '8px', marginBottom: '16px' }}
+            style={{
+              width: '100%',
+              maxHeight: '300px',
+              objectFit: 'cover',
+              borderRadius: '8px',
+              marginBottom: '16px',
+            }}
           />
         )}
 
+        <p>
+          <strong>작성자:</strong> {authorInfo?.displayName || '익명'}
+          {authorInfo?.avgTimeRating && (
+            <span style={{ marginLeft: '8px', color: '#666' }}>
+              ⭐ {(
+                (authorInfo.avgTimeRating +
+                  authorInfo.avgPriceRating +
+                  authorInfo.avgPlaceRating) /
+                3
+              ).toFixed(1)}{' '}
+              / 5.0
+            </span>
+          )}
+        </p>
         <p><strong>최소 주문 금액:</strong> {post.minOrderPrice}원</p>
         <p><strong>배달비:</strong> {post.deliveryFee}원</p>
+        {perPersonFee !== null && (
+          <p><strong>1인당 부담:</strong> {perPersonFee}원 (작성자 포함)</p>
+        )}
         <p><strong>모집 마감일:</strong> {post.deadline?.replace('T', ' ')}</p>
         <p><strong>상세 설명:</strong><br />{post.description}</p>
         <p><strong>거래 일시:</strong> {post.meetTime?.replace('T', ' ')}</p>
         <p><strong>거래 위치:</strong> {post.location} {post.locationDetail}</p>
-        
+
         <KakaoMapSearch location={post.location} />
 
         {isAuthor ? (
@@ -177,50 +152,34 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           </div>
         ) : (
           <div style={{ marginTop: '20px' }}>
-            {isDeadlinePassed && isParticipant ? (
-              <button 
-                onClick={handleOpenDeadlinePopup}
-                style={{
-                  background: '#f8f9fa',
-                  border: '1px solid #e9ecef',
-                  borderRadius: 8,
-                  padding: '12px 24px',
-                  fontSize: 14,
-                  color: '#495057',
-                  cursor: 'pointer',
-                  width: '100%'
-                }}
-              >
-                작성자 정보 보기
-              </button>
-            ) : !isDeadlinePassed && (
-              <button onClick={() => setShowForm(true)}>🤝 참여하기</button>
-            )}
+            <button onClick={() => setShowForm(true)}>🤝 참여하기</button>
           </div>
         )}
       </div>
 
       {showForm && (
-        <div style={{
-          position: 'fixed',
-          top: '20%',
-          left: '50%',
-          transform: 'translate(-50%, -20%)',
-          backgroundColor: '#fff',
-          padding: '20px',
-          border: '1px solid #ccc',
-          borderRadius: '8px',
-          zIndex: 1000,
-        }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: '20%',
+            left: '50%',
+            transform: 'translate(-50%, -20%)',
+            backgroundColor: '#fff',
+            padding: '20px',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            zIndex: 1000,
+          }}
+        >
           <h3>참여 양식</h3>
           <div>
-            <label>메뉴: <input value={menu} onChange={e => setMenu(e.target.value)} /></label>
+            <label>메뉴: <input value={menu} onChange={(e) => setMenu(e.target.value)} /></label>
           </div>
           <div>
-            <label>금액: <input value={price} onChange={e => setPrice(e.target.value)} /></label>
+            <label>금액: <input value={price} onChange={(e) => setPrice(e.target.value)} /></label>
           </div>
           <div>
-            <label>입금명: <input value={depositor} onChange={e => setDepositor(e.target.value)} /></label>
+            <label>입금명: <input value={depositor} onChange={(e) => setDepositor(e.target.value)} /></label>
           </div>
           <div style={{ marginTop: '10px' }}>
             <button onClick={handleJoin}>제출</button>
@@ -228,15 +187,6 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           </div>
         </div>
       )}
-
-      <DeadlinePopup
-        isOpen={deadlinePopup.isOpen}
-        onClose={handleCloseDeadlinePopup}
-        meetTime={deadlinePopup.meetTime}
-        title={deadlinePopup.title}
-        postId={deadlinePopup.postId}
-        type={deadlinePopup.type}
-      />
     </>
   );
 }

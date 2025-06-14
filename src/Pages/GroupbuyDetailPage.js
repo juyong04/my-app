@@ -1,5 +1,5 @@
-// GroupbuyDetailPage.js - 수정 버튼 제거됨
-import React, { useState, useEffect } from 'react';
+// GroupbuyDetailPage.js - 작성자 닉네임 및 평점 표시 개선
+import React, { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import {
   doc,
@@ -9,66 +9,36 @@ import {
   arrayUnion,
   addDoc,
   collection,
-  query,
-  where,
-  getDocs,
 } from 'firebase/firestore';
 import KakaoMapSearch from '../Components/KaKaoMapSearch.js';
-import DeadlinePopup from '../Components/DeadlinePopup';
 
 function GroupbuyDetailPage({ post, goBack }) {
-  const [deadlinePopup, setDeadlinePopup] = useState({
-    isOpen: false,
-    meetTime: '',
-    title: '',
-    postId: '',
-    type: 'buy'
-  });
-  const [isParticipant, setIsParticipant] = useState(false);
+  const [authorInfo, setAuthorInfo] = useState(null);
 
   useEffect(() => {
-    const checkParticipation = async () => {
-      if (!auth.currentUser) return;
-      
-      try {
-        const q = query(
-          collection(db, 'groupbuyParticipants'),
-          where('userId', '==', auth.currentUser.uid),
-          where('postId', '==', post.id)
-        );
-        const querySnapshot = await getDocs(q);
-        setIsParticipant(!querySnapshot.empty);
-      } catch (error) {
-        console.error('참여 여부 확인 실패:', error);
+    const fetchAuthorInfo = async () => {
+      if (!post?.uid) return;
+      const userRef = doc(db, 'users', post.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const user = userSnap.data();
+        const avg = (
+          (user.avgTimeRating || 0) +
+          (user.avgPriceRating || 0) +
+          (user.avgPlaceRating || 0)
+        ) / 3;
+        setAuthorInfo({
+          displayName: user.displayName || '익명',
+          avgRating: avg,
+        });
       }
     };
-
-    checkParticipation();
-  }, [post.id]);
+    fetchAuthorInfo();
+  }, [post?.uid]);
 
   const perPersonPrice = Math.floor(
     Number(post.totalPrice.replace(/,/g, '')) / Number(post.goalPeople)
   ).toLocaleString();
-
-  const handleOpenDeadlinePopup = () => {
-    setDeadlinePopup({
-      isOpen: true,
-      meetTime: post.meetTime?.replace('T', ' '),
-      title: post.title,
-      postId: post.id,
-      type: 'buy'
-    });
-  };
-
-  const handleCloseDeadlinePopup = () => {
-    setDeadlinePopup({
-      isOpen: false,
-      meetTime: '',
-      title: '',
-      postId: '',
-      type: 'buy'
-    });
-  };
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm('정말 삭제하시겠습니까?');
@@ -129,7 +99,6 @@ function GroupbuyDetailPage({ post, goBack }) {
   };
 
   const isAuthor = auth.currentUser?.uid === post.uid;
-  const isDeadlinePassed = new Date() > new Date(post.deadline);
 
   return (
     <div style={{ padding: '20px' }}>
@@ -152,16 +121,24 @@ function GroupbuyDetailPage({ post, goBack }) {
         />
       )}
 
+      <p>
+        <strong>작성자:</strong> {authorInfo?.displayName || '익명'}
+        {authorInfo?.avgRating && (
+          <span style={{ marginLeft: '8px', color: '#666' }}>
+            ⭐ {authorInfo.avgRating.toFixed(1)}
+          </span>
+        )}
+      </p>
       <p><strong>목표 인원:</strong> {post.goalPeople}명</p>
       <p><strong>현재 인원:</strong> {post.currentPeople || 0}명</p>
       <p><strong>모집 마감일:</strong> {post.deadline?.replace('T', ' ')}</p>
-      
+
       <p><strong>총 금액:</strong> {post.totalPrice} 원</p>
       <p><strong>1인당 금액:</strong> {perPersonPrice} 원</p>
       <p><strong>설명:</strong><br />{post.description}</p>
       <p><strong>거래 일시:</strong> {post.meetTime?.replace('T', ' ')}</p>
       <p><strong>거래 위치:</strong> {post.location} {post.locationDetail}</p>
-      
+
       <KakaoMapSearch location={post.location} />
 
       {isAuthor ? (
@@ -170,36 +147,9 @@ function GroupbuyDetailPage({ post, goBack }) {
         </div>
       ) : (
         <div style={{ marginTop: '20px' }}>
-          {isDeadlinePassed && isParticipant ? (
-            <button 
-              onClick={handleOpenDeadlinePopup}
-              style={{
-                background: '#f8f9fa',
-                border: '1px solid #e9ecef',
-                borderRadius: 8,
-                padding: '12px 24px',
-                fontSize: 14,
-                color: '#495057',
-                cursor: 'pointer',
-                width: '100%'
-              }}
-            >
-              작성자 정보 보기
-            </button>
-          ) : !isDeadlinePassed && (
-            <button onClick={handleJoin}>🤝 참여하기</button>
-          )}
+          <button onClick={handleJoin}>🤝 참여하기</button>
         </div>
       )}
-
-      <DeadlinePopup
-        isOpen={deadlinePopup.isOpen}
-        onClose={handleCloseDeadlinePopup}
-        meetTime={deadlinePopup.meetTime}
-        title={deadlinePopup.title}
-        postId={deadlinePopup.postId}
-        type={deadlinePopup.type}
-      />
     </div>
   );
 }
