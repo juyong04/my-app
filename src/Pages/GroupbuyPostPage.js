@@ -1,6 +1,12 @@
 // GroupbuyPostPage.js
 import React, { useState } from 'react';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  Timestamp,
+  doc,
+  getDoc,
+} from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import PostForm from '../Components/PostForm';
 
@@ -26,22 +32,34 @@ function GroupbuyPostPage({ goBack }) {
     const meetTime = `${meetTimeDate}T${meetHour}:${meetMinute}`;
 
     try {
+      const uid = auth.currentUser.uid;
+
+      // 🔸 사용자 닉네임 가져오기
+      const userRef = doc(db, 'users', uid);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data();
+      const authorName = userData?.displayName || '익명';
+
+      // 🔸 게시글 저장
       await addDoc(collection(db, 'groupbuys'), {
         title,
         goalPeople,
         deadline,
-        meetTime, // ✅ 추가됨
+        meetTime,
         totalPrice,
         description,
         location,
         locationDetail,
-        imageUrl: '', // 추후 firebase storage 적용 가능
+        imageUrl: '', // 이미지 업로드 미적용 상태
         localImageUrl: previewUrl || '',
-        currentPeople: 0,
+        currentPeople: 1, // ✅ 작성자 포함
         createdAt: Timestamp.now(),
-        uid: auth.currentUser.uid,
+        uid,
+        authorName, // ✅ 닉네임 저장
+        participants: [uid], // ✅ 작성자 자동 참여
       });
 
+      alert('글이 등록되었습니다!');
       goBack();
     } catch (err) {
       console.error('글 등록 실패:', err);
@@ -68,7 +86,7 @@ function GroupbuyPostPage({ goBack }) {
         setHour={setHour}
         minute={minute}
         setMinute={setMinute}
-        meetTimeDate={meetTimeDate}       // ✅ 추가
+        meetTimeDate={meetTimeDate}
         setMeetTimeDate={setMeetTimeDate}
         meetHour={meetHour}
         setMeetHour={setMeetHour}
