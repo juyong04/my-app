@@ -1,4 +1,5 @@
 import React from 'react';
+import './GroupdeliveryListPage.css';
 
 function formatDeliveryCountdown(deadline) {
   const now = new Date();
@@ -16,65 +17,25 @@ function formatDeliveryCountdown(deadline) {
 
 function GroupdeliveryListPage({ posts, onSelect }) {
   if (!posts || posts.length === 0) {
-    return <p style={{ padding: '20px' }}>등록된 공동배달 글이 없습니다.</p>;
+    return <p className="empty-message">등록된 공동배달 글이 없습니다.</p>;
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="groupdelivery-list-container">
       <h2>공동배달 목록</h2>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      <ul className="groupdelivery-list">
         {posts.map((post, index) => (
           <li
             key={index}
             onClick={() => onSelect(post)}
-            style={{
-              display: 'flex',
-              gap: '12px',
-              marginBottom: '16px',
-              borderBottom: '1px solid #ddd',
-              paddingBottom: '12px',
-              cursor: 'pointer',
-            }}
+            className="groupdelivery-item"
           >
-            <div
-              style={{
-                width: '80px',
-                height: '80px',
-                background: '#eee',
-                borderRadius: '8px',
-                overflow: 'hidden',
-              }}
-            >
-              {post.imageUrl ? (
-                <img
-                  src={post.imageUrl}
-                  alt="썸네일"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    fontSize: '12px',
-                    padding: '8px',
-                    color: '#888',
-                    textAlign: 'center',
-                  }}
-                >
-                  이미지 없음
-                </div>
-              )}
-            </div>
-
-            <div style={{ flex: 1 }}>
-              <h3 style={{ margin: 0 }}>{post.title}</h3>
-              <p style={{ margin: '4px 0', fontSize: '14px' }}>
-                최소 주문금액: {post.minOrderPrice}원 / 배달비: {post.deliveryFee}원
+            <div className="item-info">
+              <h3>{post.title}</h3>
+              <p className="meta">
+                최소주문 {post.minOrderPrice}원 / 배달비 {post.deliveryFee}원
               </p>
-              <p style={{ fontSize: '13px', color: 'red' }}>
+              <p className={`deadline ${new Date(post.deadline) < new Date() ? 'closed' : 'open'}`}>
                 {formatDeliveryCountdown(post.deadline)}
               </p>
             </div>
