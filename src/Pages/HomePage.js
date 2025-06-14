@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './HomePage.css'; // ✅ 추가: 외부 CSS 파일 import
 function formatCountdown(deadline) {
   const now = new Date();
   const target = new Date(deadline);
@@ -12,29 +12,19 @@ function formatCountdown(deadline) {
 
 function HomePostList({ title, posts, onSelect }) {
   return (
-    <div style={{ marginBottom: '32px' }}>
+    <div className="post-section"> {/* ✅ 변경: style 제거하고 className 사용 */}
       <h2>{title}</h2>
       {posts.length === 0 ? (
         <p style={{ color: '#888' }}>표시할 글이 없습니다.</p>
       ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul className="post-list"> {/* ✅ 변경: 스타일 제거하고 className 사용 */}
           {posts.map((post, idx) => (
-            <li key={idx}
+            <li
+              key={idx}
               onClick={() => onSelect(post)}
-              style={{
-                display: 'flex',
-                gap: '12px',
-                marginBottom: '14px',
-                cursor: 'pointer'
-              }}
+              className="post-item" // ✅ 카드형 스타일로 전환
             >
-              <div style={{
-                width: '60px',
-                height: '60px',
-                background: '#eee',
-                borderRadius: '6px',
-                overflow: 'hidden'
-              }}>
+              <div className="post-image"> {/* ✅ CSS에서 크기, 테두리 처리 */}
                 {post.imageUrl ? (
                   <img
                     src={post.imageUrl}
@@ -47,12 +37,14 @@ function HomePostList({ title, posts, onSelect }) {
                   </div>
                 )}
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 'bold' }}>{post.title}</div>
-                <div style={{ fontSize: '13px', color: '#555' }}>
-                  {formatCountdown(post.deadline)} / {post.currentPeople || 0}명 참여중
-                </div>
+              <div className="post-content">
+              <div className="post-title">{post.title}</div>
+              <div className="post-info">
+                <span className="deadline-red">{formatCountdown(post.deadline)}</span>
+                &nbsp;/ {post.currentPeople || 0}명 참여중
               </div>
+            </div>
+
             </li>
           ))}
         </ul>

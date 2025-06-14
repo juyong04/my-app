@@ -90,17 +90,25 @@ function MyPage() {
         </div>
       ) : (
         <div className="mypage-box">
+          {/* 🔄 프로필 이미지 및 이름/학번 정렬 */}
           <div className="mypage-header">
-            <img className="profile-image" src="/profile.png" alt="profile" />
+            <img className="profile-image"  src={userData.photoUrl || "/default-profile.png"} alt="profile" />
             <h3>{userData.displayName}</h3>
             <p className="student-id">({userData.studentId})</p>
           </div>
-          <div className="info-list">
-            <div className="info-item"><span>👤</span> 이름: {userData.displayName}</div>
-            <div className="info-item"><span>🎓</span> 학번: {userData.studentId}</div>
-            <div className="info-item"><span>🏦</span> 계좌번호: {userData.accountNumber || '미등록'}</div>
+
+          {/* ✅ 추가: 노란색 타이틀 박스 + 검정 수정 버튼 */}
+          <div className="profile-title-box"> {/* ✅ 추가 */}
+            내 프로필
+            <button className="profile-edit-button" onClick={() => setIsEditing(true)}>✏️수정</button>
           </div>
-          <button className="auth-button" onClick={() => setIsEditing(true)}>✏️ 수정</button>
+
+         {/* 🔄 정보 항목들을 카드형으로 구성 */}
+          <div className="info-list"> {/* ✅ 유지 (디자인만 CSS에서 수정됨) */}
+            <div className="info-item">👤닉네임: {userData.displayName}</div>
+            <div className="info-item">🎓학번: {userData.studentId}</div>
+            <div className="info-item">🏦계좌번호: {userData.accountNumber || '미등록'}</div>
+          </div>
         </div>
       )}
     </div>
