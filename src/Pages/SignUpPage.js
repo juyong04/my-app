@@ -11,6 +11,16 @@ function SignUpPage({ onMoveToLogin }) {
   const [displayName, setDisplayName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+   // ✅ 사진 시늉용 상태 추가
+  const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setPreviewUrl(URL.createObjectURL(file)); // 브라우저용 미리보기 URL
+    }
+  };
 
   const handleSignUp = async () => {
     if (!studentId || !password || !displayName) {
@@ -84,6 +94,23 @@ function SignUpPage({ onMoveToLogin }) {
         value={accountNumber}
         onChange={(e) => setAccountNumber(e.target.value)}
       />
+       {/* ✅ 사진 파일 첨부 */}
+      <label className="auth-subtext">학생증 사진 첨부 (선택)</label>
+      <input
+        className="auth-input"
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+      />
+      {/* ✅ 사진 미리보기 */}
+      {previewUrl && (
+        <img
+          src={previewUrl}
+          alt="첨부된 사진 미리보기"
+          style={{ marginTop: '10px', maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }}
+        />
+      )}
+
 
       <button className="auth-button" onClick={handleSignUp}>회원가입 요청</button>
 
