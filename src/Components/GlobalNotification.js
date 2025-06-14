@@ -27,6 +27,7 @@ function GlobalNotification({ onNavigate = () => {} }) {
       postId={currentNotification.id}
       type={currentNotification.type}
       onNavigate={onNavigate}
+      isHost={currentNotification.isHost}
     />
   );
 }

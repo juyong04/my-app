@@ -3,7 +3,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import './DeadlinePopup.css';
 
-function DeadlinePopup({ isOpen, onClose, meetTime, title, postId, type, onNavigate = () => {} }) {
+function DeadlinePopup({ isOpen, onClose, meetTime, title, postId, type, onNavigate = () => {}, isHost = false }) {
   const [authorInfo, setAuthorInfo] = useState({
     accountNumber: '',
     displayName: '',
@@ -56,10 +56,21 @@ function DeadlinePopup({ isOpen, onClose, meetTime, title, postId, type, onNavig
       <div className="deadline-popup-content" onClick={e => e.stopPropagation()}>
         <h3>마감 알림</h3>
         <p className="popup-title">{title}</p>
-        <p className="popup-message">모집이 마감되었습니다!</p>
+        
+        {isHost ? (
+          <>
+            <p className="popup-message">작성하신 모집이 마감되었습니다!</p>
+            <p className="popup-meet-time">만남 시간: {meetTime}</p>
+          </>
+        ) : (
+          <>
+            <p className="popup-message">참여하신 모집이 마감되었습니다!</p>
+            <p className="popup-meet-time">만남 시간: {meetTime}</p>
+            <p className="popup-author-info">작성자: {maskName(authorInfo.displayName)} ({authorInfo.studentId})</p>
+            <p className="popup-account-number">입금 계좌번호: {authorInfo.accountNumber}</p>
+          </>
+        )}
 
-        <p className="popup-author-info">작성자: {maskName(authorInfo.displayName)} ({authorInfo.studentId})</p>
-        <p className="popup-account-number">입금 계좌번호: {authorInfo.accountNumber}</p>
         <div className="popup-buttons">
           <button className="popup-navigate-button" onClick={handleNavigate}>
             상세 페이지로 이동
