@@ -1,5 +1,5 @@
 // GroupdeliveryDetailPage.js - 수정 버튼 제거됨 & 참여 양식 포함
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import {
   doc,
@@ -9,14 +9,66 @@ import {
   arrayUnion,
   addDoc,
   collection,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore';
 import KakaoMapSearch from '../Components/KaKaoMapSearch.js';
+import DeadlinePopup from '../Components/DeadlinePopup';
 
 function GroupdeliveryDetailPage({ post, goBack }) {
+  const [deadlinePopup, setDeadlinePopup] = useState({
+    isOpen: false,
+    meetTime: '',
+    title: '',
+    postId: '',
+    type: 'delivery'
+  });
+  const [isParticipant, setIsParticipant] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [menu, setMenu] = useState('');
   const [price, setPrice] = useState('');
   const [depositor, setDepositor] = useState('');
+
+  useEffect(() => {
+    const checkParticipation = async () => {
+      if (!auth.currentUser) return;
+      
+      try {
+        const q = query(
+          collection(db, 'groupdeliveryParticipants'),
+          where('userId', '==', auth.currentUser.uid),
+          where('postId', '==', post.id)
+        );
+        const querySnapshot = await getDocs(q);
+        setIsParticipant(!querySnapshot.empty);
+      } catch (error) {
+        console.error('참여 여부 확인 실패:', error);
+      }
+    };
+
+    checkParticipation();
+  }, [post.id]);
+
+  const handleOpenDeadlinePopup = () => {
+    setDeadlinePopup({
+      isOpen: true,
+      meetTime: post.meetTime?.replace('T', ' '),
+      title: post.title,
+      postId: post.id,
+      type: 'delivery'
+    });
+  };
+
+  const handleCloseDeadlinePopup = () => {
+    setDeadlinePopup({
+      isOpen: false,
+      meetTime: '',
+      title: '',
+      postId: '',
+      type: 'delivery'
+    });
+  };
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm('정말 삭제하시겠습니까?');
@@ -89,6 +141,10 @@ function GroupdeliveryDetailPage({ post, goBack }) {
   };
 
   const isAuthor = auth.currentUser?.uid === post.uid;
+  const isDeadlinePassed = new Date() > new Date(post.deadline);
+  const perPersonPrice = post.totalPrice && post.goalPeople ? 
+    Math.floor(Number(post.totalPrice.replace(/,/g, '')) / Number(post.goalPeople)).toLocaleString() : 
+    '0';
 
   return (
     <>
@@ -112,7 +168,7 @@ function GroupdeliveryDetailPage({ post, goBack }) {
         <p><strong>상세 설명:</strong><br />{post.description}</p>
         <p><strong>거래 일시:</strong> {post.meetTime?.replace('T', ' ')}</p>
         <p><strong>거래 위치:</strong> {post.location} {post.locationDetail}</p>
-
+        
         <KakaoMapSearch location={post.location} />
 
         {isAuthor ? (
@@ -121,7 +177,25 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           </div>
         ) : (
           <div style={{ marginTop: '20px' }}>
-            <button onClick={() => setShowForm(true)}>🤝 참여하기</button>
+            {isDeadlinePassed && isParticipant ? (
+              <button 
+                onClick={handleOpenDeadlinePopup}
+                style={{
+                  background: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: 8,
+                  padding: '12px 24px',
+                  fontSize: 14,
+                  color: '#495057',
+                  cursor: 'pointer',
+                  width: '100%'
+                }}
+              >
+                작성자 정보 보기
+              </button>
+            ) : !isDeadlinePassed && (
+              <button onClick={() => setShowForm(true)}>🤝 참여하기</button>
+            )}
           </div>
         )}
       </div>
@@ -154,6 +228,15 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           </div>
         </div>
       )}
+
+      <DeadlinePopup
+        isOpen={deadlinePopup.isOpen}
+        onClose={handleCloseDeadlinePopup}
+        meetTime={deadlinePopup.meetTime}
+        title={deadlinePopup.title}
+        postId={deadlinePopup.postId}
+        type={deadlinePopup.type}
+      />
     </>
   );
 }

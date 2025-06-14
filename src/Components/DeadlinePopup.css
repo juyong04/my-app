@@ -39,7 +39,7 @@
   font-weight: bold;
   margin-bottom: 16px;
 }
-
+/*
 .popup-meet-time {
   font-size: 16px;
   color: #2c3e50;
@@ -47,6 +47,27 @@
   padding: 12px;
   background-color: #f8f9fa;
   border-radius: 8px;
+}
+*/
+
+.popup-author-info {
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.popup-account-number {
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-weight: 500;
 }
 
 .popup-buttons {
