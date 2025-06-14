@@ -210,19 +210,7 @@ function GroupbuyDetailPage({ post, goBack }) {
       </button>
       <h2>{post.title}</h2>
 
-      {post.imageUrl && (
-        <img
-          src={post.imageUrl}
-          alt="상품 이미지"
-          style={{
-            width: '100%',
-            maxHeight: '300px',
-            objectFit: 'cover',
-            borderRadius: '8px',
-            marginBottom: '12px',
-          }}
-        />
-      )}
+
 
       <p>
         <strong>작성자:</strong> {authorInfo?.displayName || '익명'}

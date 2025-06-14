@@ -1,0 +1,91 @@
+.empty-message {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 15px;
+}
+
+.groupbuy-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.groupbuy-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.groupbuy-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-info h3 {
+  margin: 0 0 6px 0;  /* 제목 아래 약간만 띄움 */
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.people-count {
+  margin: 0 0 4px 0;  /* 아래 간격 최소화 */
+  font-size: 14px;
+  color: #555;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  /* ✅ baseline → center 로 조정 */
+  margin-top: 4px;
+}
+
+.price-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1;
+  padding-top: 2px; /* ✅ 살짝 올려줌 */
+}
+
+.price-label {
+  font-size: 11px;
+  color: #999;
+  margin: 0;
+  line-height: 1.1;
+  height: 14px; /* ✅ 고정 높이로 공간 정렬 맞춤 */
+}
+
+.price {
+  font-weight: bold;
+  font-size: 15px;
+  color: #1e90ff;
+  margin: 0;
+}
+
+.deadline {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.deadline.open {
+  color: #e74c3c;
+}
+
+.deadline.closed {
+  color: #888;
+}

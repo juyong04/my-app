@@ -1,66 +1,84 @@
+/* PostForm.css */
+
+html, body, textarea {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  font-family: 'Pretendard', sans-serif;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 .post-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  width: 100%;
+  max-width: none;
+  padding-bottom: 50px;
+  margin: 0;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.form-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
 
 .post-form label {
-  display: flex;
-  flex-direction: column;
+  display: block;
+  margin-bottom: 20px;
   font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 8px;
+  color: #444;
 }
 
 .post-form input,
 .post-form textarea,
-.post-form select,
-.post-form button[type="button"] {
-  margin-top: 6px;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+.post-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 15px;
   outline: none;
-  resize: vertical;
+  margin-top: 6px;
+  box-sizing: border-box;
+  background-color: #fafafa;
 }
 
-.post-form input:focus,
-.post-form textarea:focus,
-.post-form select:focus {
-  border-color: #1e90ff;
-  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+.post-form textarea {
+  resize: none;
+  height: 100px;
 }
 
-/* 지도에서 선택 버튼 스타일 추가 */
-.post-form button[type="button"] {
-  background-color: #eee;
-  cursor: pointer;
-  width: fit-content;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.post-form button[type="button"]:hover {
-  background-color: #ddd;
-}
-
-/* 제출 버튼 */
-.post-form button[type="submit"] {
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #1e90ff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+.location-preview {
+  font-size: 13px;
+  color: #222;
   margin-top: 8px;
-  transition: background-color 0.2s;
 }
 
-.post-form button[type="submit"]:hover {
-  background-color: #0d74d1;
+.fixed-submit {
+  position: fixed;
+  bottom: 72px; /* 하단바(60px) + 여유(12px) */
+  left: 16px;
+  right: 16px;
+  padding: 0;
+  background: transparent;
+  z-index: 1100; /* 하단바보다 위에 오도록 */
+}
+
+.fixed-submit button {
+  width: 100%;
+  padding: 14px;
+  background-color: #000;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

@@ -1,21 +1,22 @@
-/* src/Layout/FloatingButton.css */
 .floating-button {
   position: fixed;
   right: 20px;
   bottom: 80px; /* 하단바 위로 살짝 뜨게 */
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background-color: #1e90ff;
-  color: white;
-  font-size: 24px;
+  color: #fff;
+  font-size: 26px;
+  font-weight: bold;
   border: none;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   z-index: 1100;
-  transition: transform 0.2s ease-in-out;
+  transition: all 0.2s ease;
 }
 
 .floating-button:hover {
-  transform: scale(1.05);
+  background-color: #187bcd;
+  transform: translateY(-2px) scale(1.05);
 }

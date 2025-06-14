@@ -1,5 +1,6 @@
 .App {
   padding-bottom: 60px; /* 하단바 안 가리게 */
+  background-color: #f9fafb;
 }
 
 .content {
