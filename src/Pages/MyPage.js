@@ -1,7 +1,7 @@
 // src/Pages/MyPage.js
 import { useEffect, useState } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { updatePassword } from 'firebase/auth';
+import { updatePassword, signOut } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import '../AuthForm.css';
 
@@ -73,6 +73,16 @@ function MyPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      window.location.reload(); // 혹은 라우팅을 통해 로그인 페이지로 이동 가능
+    } catch (err) {
+      console.error('로그아웃 실패:', err);
+      alert('로그아웃 중 오류 발생');
+    }
+  };
+
   if (!userData) return <p className="mypage-container">📦 내 정보 불러오는 중...</p>;
 
   return (
@@ -85,32 +95,46 @@ function MyPage() {
           <label>이름: <input name="displayName" value={formData.displayName} onChange={handleChange} /></label>
           <label>학번: <input name="studentId" value={formData.studentId} readOnly disabled /></label>
           <label>계좌번호: <input name="accountNumber" value={formData.accountNumber} onChange={handleChange} /></label>
-          <label>새 비밀번호: <input name="password" type="password" value={formData.password} onChange={handleChange} /></label>
           <button className="auth-button" onClick={handleSave}>💾 저장</button>
         </div>
       ) : (
         <div className="mypage-box">
-          {/* 🔄 프로필 이미지 및 이름/학번 정렬 */}
           <div className="mypage-header">
             <img className="profile-image"  src={userData.photoUrl || "/default-profile.png"} alt="profile" />
             <h3>{userData.displayName}</h3>
             <p className="student-id">({userData.studentId})</p>
           </div>
 
-          {/* ✅ 추가: 노란색 타이틀 박스 + 검정 수정 버튼 */}
-          <div className="profile-title-box"> {/* ✅ 추가 */}
+          <div className="profile-title-box">
             내 프로필
             <button className="profile-edit-button" onClick={() => setIsEditing(true)}>✏️수정</button>
           </div>
 
-         {/* 🔄 정보 항목들을 카드형으로 구성 */}
-          <div className="info-list"> {/* ✅ 유지 (디자인만 CSS에서 수정됨) */}
+          <div className="info-list">
             <div className="info-item">👤닉네임: {userData.displayName}</div>
             <div className="info-item">🎓학번: {userData.studentId}</div>
             <div className="info-item">🏦계좌번호: {userData.accountNumber || '미등록'}</div>
           </div>
         </div>
       )}
+
+      {/* ✅ 로그아웃 버튼 */}
+      <div style={{ textAlign: 'center', marginTop: '32px' }}>
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: '10px 20px',
+            fontSize: '15px',
+            fontWeight: '600',
+            backgroundColor: '#f5f5f5',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            cursor: 'pointer',
+          }}
+        >
+          🔓 로그아웃
+        </button>
+      </div>
     </div>
   );
 }

@@ -164,7 +164,7 @@ function App() {
       <Router>
         <GlobalNotification onNavigate={handleNavigate} />
         <div className="App">
-          <button
+          {/* <button
             onClick={handleLogout}
             style={{
               position: 'fixed',
@@ -178,7 +178,7 @@ function App() {
             }}
           >
             로그아웃
-          </button>
+          </button> */}
 
           <div className="content">
             {activePage === 'home' && (

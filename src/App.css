@@ -1,3 +1,11 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+* {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}
+
 .App {
   padding-bottom: 60px; /* 하단바 안 가리게 */
   background-color: #f9fafb;
@@ -5,4 +13,38 @@
 
 .content {
   padding: 20px;
+}
+/* body에 기본 설정 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Pretendard', sans-serif;
+  overflow: hidden; /* 강제 스크롤 막기 (원한다면) */
+}
+
+/* 전체 앱 컨테이너에만 스크롤 허용 + 스크롤바 숨기기 */
+#root, .App {
+  height: 100vh;
+  overflow-y: scroll;
+
+  /* 스크롤바 안 보이게 */
+  -ms-overflow-style: none;  /* IE */
+  scrollbar-width: none;     /* Firefox */
+}
+
+#root::-webkit-scrollbar,
+.App::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Edge */
+}
+
+.groupbuy-detail-container {
+  overflow-x: auto;
+  overflow-y: auto;
+
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE 10+ */
+}
+
+.groupbuy-detail-container::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari, Edge */
 }

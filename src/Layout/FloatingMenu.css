@@ -8,7 +8,6 @@
   z-index: 1101;
 }
 
-HEAD
 .floating-menu button {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -25,6 +24,4 @@ HEAD
 .floating-menu button:hover {
   background-color: #efefef;
   transform: translateY(-1px);
-
 }
-

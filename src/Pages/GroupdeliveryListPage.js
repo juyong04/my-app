@@ -32,12 +32,19 @@ function GroupdeliveryListPage({ posts, onSelect }) {
           >
             <div className="item-info">
               <h3>{post.title}</h3>
-              <p className="meta">
-                최소주문 {post.minOrderPrice}원 / 배달비 {post.deliveryFee}원
-              </p>
-              <p className={`deadline ${new Date(post.deadline) < new Date() ? 'closed' : 'open'}`}>
-                {formatDeliveryCountdown(post.deadline)}
-              </p>
+
+              
+
+              <div className="price-block">
+                <span className="price-label">최소 주문금액</span>
+                <div className="price">{post.minOrderPrice} 원</div>
+              </div>
+              <div className="bottom-row">
+                <p className={`deadline ${new Date(post.deadline) < new Date() ? 'closed' : 'open'}`}>
+                  {formatDeliveryCountdown(post.deadline)}
+                </p>
+                <p className="delivery-fee">배달비 {post.deliveryFee}원</p>
+              </div>
             </div>
           </li>
         ))}

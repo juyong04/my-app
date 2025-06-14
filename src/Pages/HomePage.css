@@ -1,7 +1,14 @@
+body, html {
+  overflow: hidden; /* ⛔ 전체 페이지 스크롤 막기 */
+}
+
 .home-container {
   padding: 20px;
-  background-color: #fff;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden; /* 🔒 세로 스크롤 막기 */
 }
+
 
 .post-section {
   margin-bottom: 32px;
@@ -9,70 +16,65 @@
 
 .post-section h2 {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 12px;
+  padding-left: 6px;
 }
 
-/* 📱 모바일 카드 리스트 설정 */
-.post-list {
+.no-posts {
+  color: #888;
+  font-size: 14px;
+  padding: 8px;
+}
+.horizontal-scroll-container {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   overflow-x: auto;
-  flex-wrap: nowrap;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-bottom: 8px;
+  padding-left: 2px;
+  scrollbar-width: none;
 }
 
-/* 📱 모바일 카드 크기 최적화 (이미지 비율 기준) */
-.post-item {
-  flex: 0 0 auto;
-  width: 44vw;
-  max-width: 180px;
-  height: 160px;               /* ✅ 카드 전체 높이 조금 더 줄임 */
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.horizontal-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-card {
+  flex: 0 0 50vw; /* 💡 화면 절반 너비 */
+  height: 180px; /* 💡 카드 높이 설정 */
+  background-color: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  justify-content: space-between;
+  box-sizing: border-box;
   cursor: pointer;
-}
-.post-image {
-  width: 100%;
-  height: 90px;                /* ✅ 이미지도 줄임 */
-  object-fit: cover;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
-
-
-.post-content {
-  padding: 6px 10px 8px;       /* ✅ 하단 여백 줄여서 채움 */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;   /* ✅ space-between → flex-start로 */
-  gap: 4px;
-  min-height: 60px;              /* ✅ 최소 높이 확보로 하단 여백 방지 */
+.scroll-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
-.post-title {
+.card-title {
+  font-size: 18px;
   font-weight: bold;
-  font-size: 13px;
-  line-height: 1.3;
-  display: -webkit-box;          /* ✅ 너무 길면 말줄임 처리 */
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: #222;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  word-break: keep-all;
 }
 
-.post-info {
-  font-size: 12px;
+.card-info {
+  font-size: 14px;
   color: #555;
+  line-height: 1.5;
 }
 
-.deadline-red {
-  color: #e60023;
-  font-weight: bold;
+.deadline {
+  color: #e04344;
+  font-weight: 600;
 }

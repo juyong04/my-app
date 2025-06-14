@@ -1,51 +1,91 @@
-.groupdelivery-list-container {
-  padding: 20px;
+.empty-message {
+  text-align: center;
+  color: #999;
+  font-size: 15px;
 }
 
-.empty-message {
-  padding: 20px;
-}
+
 
 .groupdelivery-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .groupdelivery-item {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 16px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 12px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
   cursor: pointer;
 }
 
+.groupdelivery-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .item-info {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .item-info h3 {
-  margin: 0;
-  font-size: 17px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 800;
+  color: #333;
+  margin: 0 0 12px 0;
 }
 
-.meta {
-  margin: 4px 0;
-  font-size: 14px;
-  color: #555;
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 6px;
 }
 
 .deadline {
   font-size: 13px;
-}
-
-.deadline.open {
-  color: red;
+  font-weight: 500;
+  margin: 0;
+  color: #e74c3c;
 }
 
 .deadline.closed {
-  color: gray;
+  color: #888;
+}
+
+.delivery-fee {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+}
+
+.price-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  line-height: 1.1;
+}
+
+.price-label {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+  padding: 0;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 15px;
+  color: #1e90ff;
+  margin: 0;
+  padding: 0;
 }

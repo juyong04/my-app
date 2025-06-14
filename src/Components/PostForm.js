@@ -3,6 +3,12 @@ import React from 'react';
 import './PostForm.css';
 import KakaoMap from './KakaoMap';
 
+// 숫자에 콤마 넣는 함수
+const formatNumberWithCommas = (value) => {
+  const numeric = value.replace(/[^0-9]/g, '');
+  return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
 function PostForm({
   onSubmit,
   title,
@@ -33,7 +39,6 @@ function PostForm({
   return (
     <>
       <form onSubmit={onSubmit} className="post-form" id="post-form">
-
         <label>
           품목
           <input value={title} onChange={(e) => setTitle(e.target.value)} required 
@@ -68,8 +73,15 @@ function PostForm({
 
         <label>
           총 금액
-          <input value={totalPrice} onChange={(e) => setTotalPrice(e.target.value)} required 
-          placeholder='해당 물품의 총 금액을 작성해주세요'/>
+          <input
+            value={totalPrice}
+            onChange={(e) => {
+              const formatted = formatNumberWithCommas(e.target.value);
+              setTotalPrice(formatted);
+            }}
+            required 
+            placeholder='해당 물품의 총 금액을 작성해주세요'
+          />
         </label>
 
         <label>
