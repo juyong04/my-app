@@ -1,0 +1,51 @@
+.groupdelivery-list-container {
+  padding: 20px;
+}
+
+.empty-message {
+  padding: 20px;
+}
+
+.groupdelivery-list {
+  list-style: none;
+  padding: 0;
+}
+
+.groupdelivery-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+  cursor: pointer;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-info h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.meta {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.deadline {
+  font-size: 13px;
+}
+
+.deadline.open {
+  color: red;
+}
+
+.deadline.closed {
+  color: gray;
+}
