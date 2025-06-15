@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import PostForm from '../Components/PostForm';
+import PageLayout from '../Layout/PageLayout';
 
 function GroupbuyPostPage({ goBack }) {
   const [image, setImage] = useState(null);
@@ -34,13 +35,11 @@ function GroupbuyPostPage({ goBack }) {
     try {
       const uid = auth.currentUser.uid;
 
-      // 🔸 사용자 닉네임 가져오기
       const userRef = doc(db, 'users', uid);
       const userSnap = await getDoc(userRef);
       const userData = userSnap.data();
       const authorName = userData?.displayName || '익명';
 
-      // 🔸 게시글 저장
       await addDoc(collection(db, 'groupbuys'), {
         title,
         goalPeople,
@@ -50,13 +49,13 @@ function GroupbuyPostPage({ goBack }) {
         description,
         location,
         locationDetail,
-        imageUrl: '', // 이미지 업로드 미적용 상태
+        imageUrl: '',
         localImageUrl: previewUrl || '',
-        currentPeople: 1, // ✅ 작성자 포함
+        currentPeople: 1,
         createdAt: Timestamp.now(),
         uid,
-        authorName, // ✅ 닉네임 저장
-        participants: [uid], // ✅ 작성자 자동 참여
+        authorName,
+        participants: [uid],
       });
 
       alert('글이 등록되었습니다!');
@@ -67,8 +66,7 @@ function GroupbuyPostPage({ goBack }) {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>공동구매 글쓰기</h2>
+    <PageLayout title="공동구매 글쓰기" hasPaddingTop>
       <PostForm
         onSubmit={handleSubmit}
         image={image}
@@ -101,7 +99,7 @@ function GroupbuyPostPage({ goBack }) {
         locationDetail={locationDetail}
         setLocationDetail={setLocationDetail}
       />
-    </div>
+    </PageLayout>
   );
 }
 

@@ -1,0 +1,7 @@
+.page-wrapper {
+  height: calc(100vh - 60px - 60px); /* TopBar + BottomNav */
+  overflow-y: auto;
+  padding-bottom: 80px; /* ✅ FloatingButton 겹침 방지 */
+  padding-top: 0;
+  box-sizing: border-box;
+}

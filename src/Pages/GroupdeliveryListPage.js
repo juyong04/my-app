@@ -1,4 +1,5 @@
 import React from 'react';
+import PageLayout from '../Layout/PageLayout';
 import './GroupdeliveryListPage.css';
 
 function formatDeliveryCountdown(deadline) {
@@ -17,50 +18,52 @@ function formatDeliveryCountdown(deadline) {
 
 function GroupdeliveryListPage({ posts, onSelect }) {
   if (!posts || posts.length === 0) {
-    return <p className="empty-message">등록된 공동배달 글이 없습니다.</p>;
+    return <PageLayout><p className="empty-message">등록된 공동배달 글이 없습니다.</p></PageLayout>;
   }
 
   return (
-    <div className="groupdelivery-list-container">
-      <h2>공동배달 목록</h2>
-      <ul className="groupdelivery-list">
-        {posts.map((post, index) => {
-          const deliveryFee = parseInt(post.deliveryFee?.replace(/,/g, '') || '0');
-          const currentPeople = (post.currentPeople || 0) + 1;
-          const perPersonFee = Math.ceil(deliveryFee / currentPeople).toLocaleString();
+    <PageLayout>
+      <div className="groupdelivery-list-container">
+        <h2><br /></h2>
+        <ul className="groupdelivery-list">
+          {posts.map((post, index) => {
+            const deliveryFee = parseInt(post.deliveryFee?.replace(/,/g, '') || '0');
+            const currentPeople = (post.currentPeople || 0) + 1;
+            const perPersonFee = Math.ceil(deliveryFee / currentPeople).toLocaleString();
 
-          return (
-            <li
-              key={index}
-              onClick={() => onSelect({ ...post, type: 'groupdelivery' })} // ✅ 타입 추가!
-              className="groupdelivery-item"
-            >
-              <div className="item-info">
-                <div className="card-title-row">
-                  <h3>{post.title}</h3>
-                </div>
+            return (
+              <li
+                key={index}
+                onClick={() => onSelect({ ...post, type: 'groupdelivery' })}
+                className="groupdelivery-item"
+              >
+                <div className="item-info">
+                  <div className="card-title-row">
+                    <h3>{post.title}</h3>
+                  </div>
 
-                <div className="meta-second-row">
-                  <div></div>
-                  <p className="min-order">
-                    최소 주문금액 <strong>{post.minOrderPrice}원</strong>
-                  </p>
-                </div>
+                  <div className="meta-second-row">
+                    <div></div>
+                    <p className="min-order">
+                      최소 주문금액 <strong>{post.minOrderPrice}원</strong>
+                    </p>
+                  </div>
 
-                <div className="meta-third-row">
-                  <p className={`deadline ${new Date(post.deadline) < new Date() ? 'closed' : 'open'}`}>
-                    {formatDeliveryCountdown(post.deadline)}
-                  </p>
-                  <p className="per-fee">
-                    예상 배달비 <strong>{perPersonFee}원</strong>
-                  </p>
+                  <div className="meta-third-row">
+                    <p className={`deadline ${new Date(post.deadline) < new Date() ? 'closed' : 'open'}`}>
+                      {formatDeliveryCountdown(post.deadline)}
+                    </p>
+                    <p className="per-fee">
+                      예상 배달비 <strong>{perPersonFee}원</strong>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </PageLayout>
   );
 }
 

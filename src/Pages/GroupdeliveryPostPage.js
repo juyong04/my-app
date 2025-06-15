@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import DeliveryPostForm from '../Components/DeliveryPostForm';
+import PageLayout from '../Layout/PageLayout'; // ✅ 추가
 
 function GroupdeliveryPostPage({ goBack }) {
   const [image, setImage] = useState(null);
@@ -53,8 +54,7 @@ function GroupdeliveryPostPage({ goBack }) {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>공동배달 글쓰기</h2>
+    <PageLayout title="공동배달 글쓰기" hasPaddingTop> {/* ✅ PageLayout 적용 */}
       <DeliveryPostForm
         onSubmit={handleSubmit}
         image={image}
@@ -87,7 +87,7 @@ function GroupdeliveryPostPage({ goBack }) {
         meetMinute={meetMinute}
         setMeetMinute={setMeetMinute}
       />
-    </div>
+    </PageLayout>
   );
 }
 

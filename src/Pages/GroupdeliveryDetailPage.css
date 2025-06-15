@@ -13,35 +13,22 @@
   margin-bottom: 16px;
 }
 
-/* 🔵 목록으로 버튼 - 강조 */
 .back-btn {
-  background-color: #f3f6ff;
-  border: 1px solid #1e90ff;
-  color: #1e90ff;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-.back-btn:hover {
-  background-color: #e0efff;
+  background-color: #fff;           /* 버튼 배경 흰색 */
+  border: 1px solid #f5b000;        /* 노란 테두리 */
+  color: #f5b000;                   /* 글자색 노랑 */
 }
 
-/* 🔴 삭제 버튼 */
+.back-btn:hover {
+  background-color: #fff8e1;        /* 밝은 노랑 배경 */
+}
+
 .delete-btn {
   background-color: #ff4d4f;
-  border: none;
   color: white;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-left: 8px;
+  z-index: 9999;
 }
+
 .delete-btn:hover {
   background-color: #d9363e;
 }
@@ -121,7 +108,7 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 14px 70px;
-  background-color: #1e90ff;
+  background-color: #f5b000;
   color: white;
   border: none;
   border-radius: 24px;
@@ -235,7 +222,7 @@
 }
 
 .modal-content .form-actions button:first-child {
-  background-color: #1e90ff;
+  background-color: #f5b000;
   color: white;
   margin-right: 10px;
 }
@@ -251,3 +238,4 @@
   color: #d9534f;
   margin-top: -4px;
 }
+

@@ -15,6 +15,7 @@ import {
 import KakaoMapSearch from '../Components/KaKaoMapSearch.js';
 import DeadlinePopup from '../Components/DeadlinePopup';
 import './GroupbuyDetailPage.css';
+import PageLayout from '../Layout/PageLayout';
 
 function GroupbuyDetailPage({ post, goBack }) {
   const [authorInfo, setAuthorInfo] = useState(null);
@@ -181,70 +182,71 @@ function GroupbuyDetailPage({ post, goBack }) {
   const isJoinDisabled = isAuthor || isDeadlinePassed || isParticipant;
 
   return (
-    <div className="groupbuy-detail-container">
-      <div className="top-bar">
-      <button className="back-button" onClick={goBack}>← 목록으로</button>
-      {isAuthor && !isDeadlinePassed && (
-        <button className="delete-btn-inline" onClick={handleDelete}>🗑 삭제</button>
-      )}
-    </div>
-      <h2 className="post-title">{post.title}</h2>
-
-      <div className="info-block">
-        <div className="info-item"><strong>모집 인원</strong><div>{post.goalPeople}명 중 {post.currentPeople || 0}명 모집 완료 </div></div>
-        <div className="info-item"><strong>모집 마감일</strong><div>{post.deadline?.replace('T', ' ')}</div></div>
-        <div className="info-item"><strong>총 금액</strong><div>{post.totalPrice} 원</div></div>
-        <div className="info-item"><strong>1인당 금액</strong><div>{perPersonPrice} 원</div></div>
-        <div className="info-item"><strong>설명</strong><div>{post.description}</div></div>
-      </div>
-
-      <div className="meeting-map-card">
-        <p className="meeting-label">📍 거래 일시</p>
-        <p className="meeting-time">{post.meetTime?.replace('T', ' ')}</p>
-        <p className="meeting-label">📌 거래 위치</p>
-        <p className="meeting-location">{post.location} {post.locationDetail}</p>
-        <div className="map-container">
-          <KakaoMapSearch location={post.location} />
-        </div>
-      </div>
-
-      {isAuthor && (
-        <div className="action-buttons">
-          {isDeadlinePassed && (
-            <button className="info-btn" onClick={handleShowParticipantsInfo}>참여자 정보 보기</button>
+    <PageLayout>
+      <div className="groupbuy-detail-container">
+        <div className="top-bar">
+          <button className="back-button" onClick={goBack}>← 목록으로</button>
+          {isAuthor && !isDeadlinePassed && (
+            <button className="delete-btn-inline" onClick={handleDelete}>🗑 삭제</button>
           )}
         </div>
-      )}
+        <h2 className="post-title">{post.title}</h2>
 
-      <div className="author-card">
-        <div className="author-row">
-          <strong>{authorInfo?.displayName || '익명'}</strong>
-          {authorInfo?.avgRating && (
-            <span className="author-rating">⭐ {authorInfo.avgRating.toFixed(1)}</span>
-          )}
+        <div className="info-block">
+          <div className="info-item"><strong>모집 인원</strong><div>{post.goalPeople}명 중 {post.currentPeople || 0}명 모집 완료 </div></div>
+          <div className="info-item"><strong>모집 마감일</strong><div>{post.deadline?.replace('T', ' ')}</div></div>
+          <div className="info-item"><strong>총 금액</strong><div>{post.totalPrice} 원</div></div>
+          <div className="info-item"><strong>1인당 금액</strong><div>{perPersonPrice} 원</div></div>
+          <div className="info-item"><strong>설명</strong><div>{post.description}</div></div>
         </div>
+
+        <div className="meeting-map-card">
+          <p className="meeting-label">📍 거래 일시</p>
+          <p className="meeting-time">{post.meetTime?.replace('T', ' ')}</p>
+          <p className="meeting-label">📌 거래 위치</p>
+          <p className="meeting-location">{post.location} {post.locationDetail}</p>
+          <div className="map-container">
+            <KakaoMapSearch location={post.location} />
+          </div>
+        </div>
+
+        {isAuthor && (
+          <div className="action-buttons">
+            {isDeadlinePassed && (
+              <button className="info-btn" onClick={handleShowParticipantsInfo}>참여자 정보 보기</button>
+            )}
+          </div>
+        )}
+
+        <div className="author-card">
+          <div className="author-row">
+            <strong>{authorInfo?.displayName || '익명'}</strong>
+            {authorInfo?.avgRating && (
+              <span className="author-rating">⭐ {authorInfo.avgRating.toFixed(1)}</span>
+            )}
+          </div>
+        </div>
+
+        {!isAuthor && (
+          <button
+            className={`floating-join-btn ${isJoinDisabled ? 'disabled' : ''}`}
+            onClick={!isJoinDisabled ? handleJoin : null}
+            disabled={isJoinDisabled}
+          >
+            {isJoinDisabled ? '참여 불가' : '🤝 참여하기'}
+          </button>
+        )}
+
+        <DeadlinePopup
+          isOpen={deadlinePopup.isOpen}
+          onClose={handleCloseDeadlinePopup}
+          meetTime={deadlinePopup.meetTime}
+          title={deadlinePopup.title}
+          postId={deadlinePopup.postId}
+          type={deadlinePopup.type}
+        />
       </div>
-
-      {!isAuthor && (
-        <button
-          className={`floating-join-btn ${isJoinDisabled ? 'disabled' : ''}`}
-          onClick={!isJoinDisabled ? handleJoin : null}
-          disabled={isJoinDisabled}
-        >
-          {isJoinDisabled ? '참여 불가' : '🤝 참여하기'}
-        </button>
-      )}
-
-
-      <DeadlinePopup
-        isOpen={deadlinePopup.isOpen}
-        onClose={handleCloseDeadlinePopup}
-        meetTime={deadlinePopup.meetTime}
-        title={deadlinePopup.title}
-        postId={deadlinePopup.postId}
-        type={deadlinePopup.type}
-      />
-    </div>
+    </PageLayout>
   );
 }
 

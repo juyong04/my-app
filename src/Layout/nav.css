@@ -30,6 +30,6 @@
 }
 
 .nav-button.active {
-  background-color: #f3f4f6; /* 연한 회색 강조 */
-  color: #1e90ff;           /* 파란 강조색 */
+  background-color: #f5b000; /* 연한 회색 강조 */
+  color: #ffffff;           /* 파란 강조색 */
 }

@@ -10,6 +10,7 @@ import { db, auth } from './firebase';
 import BottomNav from './Layout/nav';
 import FloatingButton from './Layout/FloatingButton';
 import FloatingMenu from './Layout/FloatingMenu';
+import TopBar from './Layout/TopBar'; // ✅ TopBar 추가
 
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
@@ -159,6 +160,22 @@ function App() {
       <Router>
         <GlobalNotification onNavigate={handleNavigate} />
         <div className="App">
+          {/* ✅ TopBar 항상 고정 */}
+          <TopBar
+            title={
+              activePage === 'home' ? '홈' :
+              activePage === 'groupbuy' ? '공동구매' :
+              activePage === 'groupdelivery' ? '공동배달' :
+              activePage === 'groupbuy-post' ? '공동구매 작성' :
+              activePage === 'groupdelivery-post' ? '공동배달 작성' :
+              activePage === 'groupbuy-detail' ? '공동구매 상세' :
+              activePage === 'groupdelivery-detail' ? '공동배달 상세' :
+              activePage === 'history' ? '거래내역' :
+              activePage === 'mypage' ? '내 정보' :
+              ''
+            }
+          />
+
           <div className="content">
             {activePage === 'home' && (
               <HomePage
@@ -167,37 +184,35 @@ function App() {
                 onSelect={handlePostSelect}
               />
             )}
-
             {activePage === 'groupbuy' && (
               <GroupbuyListPage posts={groupbuyPosts} onSelect={handlePostSelect} />
             )}
-
             {activePage === 'groupbuy-post' && (
               <GroupbuyPostPage goBack={() => setActivePage('groupbuy')} />
             )}
-
             {activePage === 'groupbuy-detail' && selectedGroupbuyPost && (
               <GroupbuyDetailPage post={selectedGroupbuyPost} goBack={() => setActivePage('groupbuy')} />
             )}
-
             {activePage === 'groupdelivery' && (
               <GroupdeliveryListPage posts={groupdeliveryPosts} onSelect={handlePostSelect} />
             )}
-
             {activePage === 'groupdelivery-post' && (
               <GroupdeliveryPostPage goBack={() => setActivePage('groupdelivery')} />
             )}
-
             {activePage === 'groupdelivery-detail' && selectedGroupdeliveryPost && (
               <GroupdeliveryDetailPage post={selectedGroupdeliveryPost} goBack={() => setActivePage('groupdelivery')} />
             )}
-
             {activePage === 'history' && <ParticipationHistoryPage />}
             {activePage === 'mypage' && <MyPage />}
           </div>
 
-          <FloatingMenu visible={menuVisible} onSelect={handleMenuSelect} />
-          <FloatingButton onClick={handleFloatingClick} />
+          {!['groupbuy-post', 'groupdelivery-post'].includes(activePage) && (
+            <>
+              <FloatingMenu visible={menuVisible} onSelect={handleMenuSelect} />
+              <FloatingButton onClick={handleFloatingClick} />
+            </>
+          )}
+
           <BottomNav activePage={activePage} setActivePage={setActivePage} />
         </div>
       </Router>

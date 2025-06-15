@@ -1,0 +1,36 @@
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: white;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* ✅ 버튼 있는 영역 */
+.top-bar-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* ✅ 오른쪽은 비워둬도 flex 유지 */
+.top-bar-right {
+  flex: 1;
+}
+
+/* ✅ 가운데 제목을 화면 기준으로 정확히 가운데 배치 */
+.top-bar-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+}

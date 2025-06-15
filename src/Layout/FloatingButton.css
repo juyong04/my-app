@@ -5,7 +5,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #1e90ff;
+  background-color: #f5b000;
   color: #fff;
   font-size: 26px;
   font-weight: bold;
@@ -17,6 +17,6 @@
 }
 
 .floating-button:hover {
-  background-color: #187bcd;
+  background-color: #ffe599;
   transform: translateY(-2px) scale(1.05);
 }

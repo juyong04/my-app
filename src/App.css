@@ -13,6 +13,7 @@
 
 .content {
   padding: 20px;
+  
 }
 /* body에 기본 설정 */
 body {
@@ -47,4 +48,10 @@ body {
 
 .groupbuy-detail-container::-webkit-scrollbar {
   display: none;                /* Chrome, Safari, Edge */
+}
+
+.page-wrapper {
+  height: calc(100vh - 60px - 60px); /* 화면 높이 - 상단바 - 하단바 */
+  overflow-y: auto;                  /* 스크롤 가능 */
+  padding-bottom: 80px;              /* 플로팅 버튼 겹침 방지 */
 }

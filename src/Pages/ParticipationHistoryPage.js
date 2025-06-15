@@ -1165,15 +1165,9 @@ function ParticipationHistoryPage() {
         padding: 16,
       }}
     >
-      <div
-        style={{
-          fontSize: 18,
-          fontWeight: 700,
-          margin: '16px 0 20px',
-          textAlign: 'center',
-        }}
-      >
-        거래내역
+      <div>
+        <br></br>
+        <br></br>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
         <button

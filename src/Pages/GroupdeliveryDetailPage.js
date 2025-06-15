@@ -6,6 +6,7 @@ import {
 } from 'firebase/firestore';
 import KakaoMapSearch from '../Components/KaKaoMapSearch';
 import DeadlinePopup from '../Components/DeadlinePopup';
+import PageLayout from '../Layout/PageLayout';
 import './GroupdeliveryDetailPage.css';
 
 function GroupdeliveryDetailPage({ post, goBack }) {
@@ -17,12 +18,19 @@ function GroupdeliveryDetailPage({ post, goBack }) {
   const [price, setPrice] = useState('');
   const [depositor, setDepositor] = useState('');
   const [authorInfo, setAuthorInfo] = useState(null);
+  const [participantsInfo, setParticipantsInfo] = useState([]);
+  const [showParticipantsInfo, setShowParticipantsInfo] = useState(false);
+
+  const isAuthor = auth.currentUser?.uid === post.uid;
+  const isDeadlinePassed = new Date() > new Date(post.deadline);
+
   const deliveryFeePerPerson = post.deliveryFee
     ? Math.ceil(parseInt(post.deliveryFee.replace(/,/g, '')) / ((post.currentPeople || 0) + 1)).toLocaleString()
     : null;
 
-  const [participantsInfo, setParticipantsInfo] = useState([]);
-  const [showParticipantsInfo, setShowParticipantsInfo] = useState(false);
+  const averageRating = authorInfo
+    ? ((authorInfo.avgTimeRating + authorInfo.avgPriceRating + authorInfo.avgPlaceRating) / 3).toFixed(1)
+    : null;
 
   useEffect(() => {
     if (!post?.uid) return;
@@ -56,7 +64,10 @@ function GroupdeliveryDetailPage({ post, goBack }) {
     const snap = await getDoc(ref);
     const data = snap.data();
     if (!data || new Date() > new Date(data.deadline)) return alert('마감된 글입니다.');
-    if ((data.participants || []).includes(auth.currentUser.uid)) return alert('이미 참여했습니다.');
+    if ((data.participants || []).includes(auth.currentUser.uid)) {
+      alert('이미 참여한 글입니다.');
+      return;
+    }
 
     const numericPrice = price.replace(/,/g, '');
 
@@ -77,6 +88,7 @@ function GroupdeliveryDetailPage({ post, goBack }) {
       alert('참여 완료!');
       setShowForm(false);
       setMenuInfo(''); setRequirement(''); setPrice(''); setDepositor('');
+      setIsParticipant(true);
     } catch (err) {
       console.error(err);
       alert('오류 발생');
@@ -107,26 +119,29 @@ function GroupdeliveryDetailPage({ post, goBack }) {
     }
   };
 
-  const isAuthor = auth.currentUser?.uid === post.uid;
-  const isDeadlinePassed = new Date() > new Date(post.deadline);
-  const averageRating = authorInfo
-    ? ((authorInfo.avgTimeRating + authorInfo.avgPriceRating + authorInfo.avgPlaceRating) / 3).toFixed(1)
-    : null;
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm('정말 삭제하시겠습니까?');
+    if (!confirmDelete) return;
+
+    try {
+      await deleteDoc(doc(db, 'groupdeliveries', post.id));
+      alert('삭제되었습니다.');
+      goBack();
+    } catch (err) {
+      console.error('삭제 실패:', err);
+      alert('삭제에 실패했습니다.');
+    }
+  };
 
   return (
-    <>
+    <PageLayout title="공동배달 상세">
       <div className="delivery-container">
-        <div className="top-bar">
-          <button className="back-btn" onClick={goBack}>← 목록으로</button>
-          {isAuthor && (
-            <button className="delete-btn" onClick={async () => {
-              if (window.confirm('정말 삭제하시겠습니까?')) {
-                await deleteDoc(doc(db, 'groupdeliveries', post.id));
-                goBack();
-              }
-            }}>🗑 삭제</button>
-          )}
-        </div>
+        {isAuthor && (
+          <div className="top-bar">
+            <button className="back-btn" onClick={goBack}>← 목록으로</button>
+            <button className="delete-btn" onClick={handleDelete}>삭제</button>
+          </div>
+        )}
 
         <h2 className="post-title">{post.title}</h2>
 
@@ -169,11 +184,11 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           <div className="modal-overlay" onClick={() => setShowForm(false)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <h3>참여 양식</h3>
-              <label>메뉴명 및 수량<input placeholder="예) 짜장면 2, 볶음밥 1" value={menuInfo} onChange={(e) => setMenuInfo(e.target.value)} /></label>
-              <label>요구사항<input placeholder="예) 짜장면은 곱빼기로 변경할게요" value={requirement} onChange={(e) => setRequirement(e.target.value)} /></label>
-              <label>주문 금액
+              <label>메뉴명 및 수량<input placeholder="예) 짜장면 1, 볶음밥 2" value={menuInfo} onChange={(e) => setMenuInfo(e.target.value)} /></label>
+              <label>요구사항<input placeholder="예) 짜장면은 곱빼기로 해주세요" value={requirement} onChange={(e) => setRequirement(e.target.value)} /></label>
+              <label>주문 금액 
                 <input
-                  placeholder="옵션 금액을 고려하여 정확히 입력해주세요."
+                placeholder="옵션을 포함하여 정확히 계산해주세요"
                   type="text"
                   inputMode="numeric"
                   value={price}
@@ -184,9 +199,8 @@ function GroupdeliveryDetailPage({ post, goBack }) {
                   }}
                 />
               </label>
-              <label>입금자명<input placeholder="실제 송금자명 입력" value={depositor} onChange={(e) => setDepositor(e.target.value)} /></label>
+              <label>입금자명<input value={depositor} onChange={(e) => setDepositor(e.target.value)} /></label>
               <p className="warning-text">⚠️ 주문 후 취소는 불가능하니 신중히 입력해주세요.</p>
-
               <div className="form-actions">
                 <button onClick={handleJoin}>제출</button>
                 <button onClick={() => setShowForm(false)}>취소</button>
@@ -195,12 +209,15 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           </div>
         )}
 
-        {!showForm && !isAuthor && !isDeadlinePassed && (
-          <button
-            className="floating-join-btn"
-            onClick={() => setShowForm(true)}
-          >
+        {!showForm && !isAuthor && !isDeadlinePassed && !isParticipant && (
+          <button className="floating-join-btn" onClick={() => setShowForm(true)}>
             🤝 참여하기
+          </button>
+        )}
+
+        {!showForm && !isAuthor && isParticipant && (
+          <button className="floating-join-btn disabled" disabled>
+            이미 참여함
           </button>
         )}
 
@@ -231,7 +248,7 @@ function GroupdeliveryDetailPage({ post, goBack }) {
           </div>
         </div>
       )}
-    </>
+    </PageLayout>
   );
 }
 
