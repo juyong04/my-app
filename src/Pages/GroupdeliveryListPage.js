@@ -24,30 +24,41 @@ function GroupdeliveryListPage({ posts, onSelect }) {
     <div className="groupdelivery-list-container">
       <h2>공동배달 목록</h2>
       <ul className="groupdelivery-list">
-        {posts.map((post, index) => (
-          <li
-            key={index}
-            onClick={() => onSelect(post)}
-            className="groupdelivery-item"
-          >
-            <div className="item-info">
-              <h3>{post.title}</h3>
+        {posts.map((post, index) => {
+          const deliveryFee = parseInt(post.deliveryFee?.replace(/,/g, '') || '0');
+          const currentPeople = (post.currentPeople || 0) + 1;
+          const perPersonFee = Math.ceil(deliveryFee / currentPeople).toLocaleString();
 
-              
+          return (
+            <li
+              key={index}
+              onClick={() => onSelect({ ...post, type: 'groupdelivery' })} // ✅ 타입 추가!
+              className="groupdelivery-item"
+            >
+              <div className="item-info">
+                <div className="card-title-row">
+                  <h3>{post.title}</h3>
+                </div>
 
-              <div className="price-block">
-                <span className="price-label">최소 주문금액</span>
-                <div className="price">{post.minOrderPrice} 원</div>
+                <div className="meta-second-row">
+                  <div></div>
+                  <p className="min-order">
+                    최소 주문금액 <strong>{post.minOrderPrice}원</strong>
+                  </p>
+                </div>
+
+                <div className="meta-third-row">
+                  <p className={`deadline ${new Date(post.deadline) < new Date() ? 'closed' : 'open'}`}>
+                    {formatDeliveryCountdown(post.deadline)}
+                  </p>
+                  <p className="per-fee">
+                    예상 배달비 <strong>{perPersonFee}원</strong>
+                  </p>
+                </div>
               </div>
-              <div className="bottom-row">
-                <p className={`deadline ${new Date(post.deadline) < new Date() ? 'closed' : 'open'}`}>
-                  {formatDeliveryCountdown(post.deadline)}
-                </p>
-                <p className="delivery-fee">배달비 {post.deliveryFee}원</p>
-              </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

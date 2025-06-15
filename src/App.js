@@ -1,25 +1,11 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { NotificationProvider } from './Context/NotificationContext';
 import GlobalNotification from './Components/GlobalNotification';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from './firebase';
-
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-} from 'firebase/firestore';
-import {
-  onAuthStateChanged,
-  setPersistence,
-  signOut,
-  inMemoryPersistence,
-} from 'firebase/auth';
-import { auth } from './firebase';
+import { doc, getDoc, collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { onAuthStateChanged, setPersistence, signOut, inMemoryPersistence } from 'firebase/auth';
+import { db, auth } from './firebase';
 
 import BottomNav from './Layout/nav';
 import FloatingButton from './Layout/FloatingButton';
@@ -28,18 +14,14 @@ import FloatingMenu from './Layout/FloatingMenu';
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
 import MyPage from './Pages/MyPage';
-
 import HomePage from './Pages/HomePage';
 import GroupbuyPostPage from './Pages/GroupbuyPostPage';
 import GroupbuyListPage from './Pages/GroupbuyListPage';
 import GroupbuyDetailPage from './Pages/GroupbuyDetailPage';
-
 import GroupdeliveryPostPage from './Pages/GroupdeliveryPostPage';
 import GroupdeliveryListPage from './Pages/GroupdeliveryListPage';
 import GroupdeliveryDetailPage from './Pages/GroupdeliveryDetailPage';
 import ParticipationHistoryPage from './Pages/ParticipationHistoryPage';
-
-
 
 function App() {
   const [user, setUser] = useState(null);
@@ -52,19 +34,13 @@ function App() {
   const [selectedGroupbuyPost, setSelectedGroupbuyPost] = useState(null);
   const [selectedGroupdeliveryPost, setSelectedGroupdeliveryPost] = useState(null);
 
-
   useEffect(() => {
     setPersistence(auth, inMemoryPersistence).then(() => {
       const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
         if (currentUser) {
           const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-          if (userDoc.exists()) {
-            const data = userDoc.data();
-            if (data.approved) {
-              setUser(currentUser);
-            } else {
-              setUser(null); // 승인 안된 유저는 무시
-            }
+          if (userDoc.exists() && userDoc.data().approved) {
+            setUser(currentUser);
           } else {
             setUser(null);
           }
@@ -82,12 +58,24 @@ function App() {
 
     const q1 = query(collection(db, 'groupbuys'), orderBy('createdAt', 'desc'));
     const unsub1 = onSnapshot(q1, (snapshot) => {
-      setGroupbuyPosts(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setGroupbuyPosts(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          type: 'groupbuy',
+        }))
+      );
     });
 
     const q2 = query(collection(db, 'groupdeliveries'), orderBy('createdAt', 'desc'));
     const unsub2 = onSnapshot(q2, (snapshot) => {
-      setGroupdeliveryPosts(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setGroupdeliveryPosts(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          type: 'groupdelivery',
+        }))
+      );
     });
 
     return () => {
@@ -110,6 +98,16 @@ function App() {
     await signOut(auth);
     setUser(null);
     setAuthPage('login');
+  };
+
+  const handlePostSelect = (post) => {
+    if (post.type === 'groupbuy') {
+      setSelectedGroupbuyPost(post);
+      setActivePage('groupbuy-detail');
+    } else if (post.type === 'groupdelivery') {
+      setSelectedGroupdeliveryPost(post);
+      setActivePage('groupdelivery-detail');
+    }
   };
 
   const handleNavigate = (type, postId) => {
@@ -150,10 +148,7 @@ function App() {
 
   if (!user) {
     return authPage === 'login' ? (
-      <LoginPage
-        onLoginSuccess={() => setActivePage('home')}
-        onMoveToSignUp={() => setAuthPage('signup')}
-      />
+      <LoginPage onLoginSuccess={() => setActivePage('home')} onMoveToSignUp={() => setAuthPage('signup')} />
     ) : (
       <SignUpPage onMoveToLogin={() => setAuthPage('login')} />
     );
@@ -164,47 +159,17 @@ function App() {
       <Router>
         <GlobalNotification onNavigate={handleNavigate} />
         <div className="App">
-          {/* <button
-            onClick={handleLogout}
-            style={{
-              position: 'fixed',
-              top: 10,
-              right: 10,
-              zIndex: 1000,
-              background: '#eee',
-              border: 'none',
-              padding: '6px 12px',
-              borderRadius: '6px',
-            }}
-          >
-            로그아웃
-          </button> */}
-
           <div className="content">
             {activePage === 'home' && (
               <HomePage
                 groupbuyPosts={groupbuyPosts}
                 groupdeliveryPosts={groupdeliveryPosts}
-                onSelect={(post) => {
-                  if (post.type === 'groupbuy') {
-                    setSelectedGroupbuyPost(post);
-                    setActivePage('groupbuy-detail');
-                  } else if (post.type === 'groupdelivery') {
-                    setSelectedGroupdeliveryPost(post);
-                    setActivePage('groupdelivery-detail');
-                  }
-                }}
+                onSelect={handlePostSelect}
               />
             )}
 
             {activePage === 'groupbuy' && (
-              <GroupbuyListPage
-                posts={groupbuyPosts}
-                onSelect={(post) => {
-                  setSelectedGroupbuyPost(post);
-                  setActivePage('groupbuy-detail');
-                }}
-              />
+              <GroupbuyListPage posts={groupbuyPosts} onSelect={handlePostSelect} />
             )}
 
             {activePage === 'groupbuy-post' && (
@@ -212,20 +177,11 @@ function App() {
             )}
 
             {activePage === 'groupbuy-detail' && selectedGroupbuyPost && (
-              <GroupbuyDetailPage
-                post={selectedGroupbuyPost}
-                goBack={() => setActivePage('groupbuy')}
-              />
+              <GroupbuyDetailPage post={selectedGroupbuyPost} goBack={() => setActivePage('groupbuy')} />
             )}
 
             {activePage === 'groupdelivery' && (
-              <GroupdeliveryListPage
-                posts={groupdeliveryPosts}
-                onSelect={(post) => {
-                  setSelectedGroupdeliveryPost(post);
-                  setActivePage('groupdelivery-detail');
-                }}
-              />
+              <GroupdeliveryListPage posts={groupdeliveryPosts} onSelect={handlePostSelect} />
             )}
 
             {activePage === 'groupdelivery-post' && (
@@ -233,15 +189,10 @@ function App() {
             )}
 
             {activePage === 'groupdelivery-detail' && selectedGroupdeliveryPost && (
-              <GroupdeliveryDetailPage
-                post={selectedGroupdeliveryPost}
-                goBack={() => setActivePage('groupdelivery')}
-              />
+              <GroupdeliveryDetailPage post={selectedGroupdeliveryPost} goBack={() => setActivePage('groupdelivery')} />
             )}
-            
+
             {activePage === 'history' && <ParticipationHistoryPage />}
-
-
             {activePage === 'mypage' && <MyPage />}
           </div>
 

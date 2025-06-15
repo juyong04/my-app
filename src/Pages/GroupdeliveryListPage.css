@@ -1,91 +1,81 @@
-.empty-message {
-  text-align: center;
-  color: #999;
-  font-size: 15px;
-}
-
-
+/* .groupdelivery-list-container {
+  padding: 20px;
+} */
 
 .groupdelivery-list {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .groupdelivery-item {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
   margin-bottom: 16px;
   padding: 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease;
   cursor: pointer;
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
 }
 
 .groupdelivery-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .item-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  font-family: 'Pretendard', sans-serif;
 }
 
-.item-info h3 {
+.card-title-row h3 {
   font-size: 18px;
-  font-weight: 800;
-  color: #333;
-  margin: 0 0 12px 0;
+  font-weight: 700;
+  margin: 0 0 6px 0;
 }
 
-.bottom-row {
+.meta-second-row,
+.meta-third-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 6px;
+  align-items: center;
 }
 
-.deadline {
-  font-size: 13px;
-  font-weight: 500;
+.min-order {
+  font-size: 14px;
+  color: #333;
   margin: 0;
-  color: #e74c3c;
+}
+
+.min-order strong {
+  color: #000;
+  margin-left: 4px;
+}
+
+.per-fee {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+.per-fee strong {
+  color: #1e90ff;
+  margin-left: 4px;
+}
+
+.deadline.open {
+  font-size: 14px;
+  color: #ff4d4f;
+  font-weight: 600;
+  margin: 0;
 }
 
 .deadline.closed {
-  color: #888;
-}
-
-.delivery-fee {
-  font-size: 13px;
-  color: #555;
-  margin: 0;
-}
-
-.price-block {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  line-height: 1.1;
-}
-
-.price-label {
-  font-size: 12px;
+  font-size: 14px;
   color: #999;
+  font-weight: 600;
   margin: 0;
-  padding: 0;
 }
 
-.price {
-  font-weight: bold;
-  font-size: 15px;
-  color: #1e90ff;
-  margin: 0;
-  padding: 0;
+.empty-message {
+  text-align: center;
+  color: #888;
+  margin-top: 40px;
 }
