@@ -175,10 +175,10 @@ function ParticipationHistoryPage() {
         );
         const processPost = async (docSnap, type) => {
           const postId = docSnap.data().postId;
-          const postRef = doc(db, `${type}s`, postId);
+          const postRef = doc(db, `${type === 'groupbuy' ? 'groupbuys' : 'groupdeliveries'}`, postId);
           const postDoc = await getDoc(postRef);
           if (!postDoc.exists()) return null;
-          const reviewsRef = collection(db, `${type}s/${postId}/reviews`);
+          const reviewsRef = collection(db, `${type === 'groupbuy' ? 'groupbuys' : 'groupdeliveries'}/${postId}/reviews`);
           const reviewsSnap = await getDocs(reviewsRef);
           const reviews = reviewsSnap.docs.map(d => d.data());
           const avgRating = calculateAverage(reviews);
@@ -514,28 +514,6 @@ function ParticipationHistoryPage() {
                 position: 'relative',
               }}
             >
-              {/* 썸네일 */}
-              <div
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 8,
-                  background: '#eee',
-                  overflow: 'hidden',
-                  flexShrink: 0,
-                  margin: 16,
-                }}
-              >
-                {post.imageUrl ? (
-                  <img
-                    src={post.imageUrl}
-                    alt=""
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', background: '#eee' }} />
-                )}
-              </div>
               {/* 본문 */}
               <div
                 style={{
