@@ -1,0 +1,32 @@
+/* 모달 오버레이 (배경) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 모달 내용 박스 */
+.modal-content {
+  background-color: #fff;
+  border-radius: 16px;
+  width: 360px;
+  max-width: 90vw;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  overflow: hidden;
+  position: relative;
+  padding: 0;
+  animation: animatetop 0.25s;
+}
+
+/* 모달 애니메이션 */
+@keyframes animatetop {
+  from { top: -50px; opacity: 0; }
+  to { top: 0; opacity: 1; }
+}

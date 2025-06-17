@@ -1,134 +1,139 @@
-.history-root {
-  max-width: 480px;
+.participation-container {
+  max-width: 800px;
   margin: 0 auto;
-  background: #fafbfc;
-  min-height: 100vh;
-  padding: 16px;
+  padding: 20px;
 }
-.history-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 16px 0 20px;
-  text-align: center;
-}
-.history-tab-bar {
+
+/* 탭 버튼 */
+.tab-buttons {
   display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 30px;
 }
-.history-tab-btn {
+
+.tab-btn {
   flex: 1;
+  padding: 15px 0;
   border: none;
-  border-radius: 8px 8px 0 0;
-  padding: 12px 0;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  background: #f4f4f4;
-  color: #333;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.3s;
 }
-.history-tab-btn.active {
+
+.tab-btn.active {
   background: #222;
-  color: #fff;
+  color: white;
 }
-.history-empty {
-  text-align: center;
-  color: #aaa;
-  margin-top: 40px;
-}
+
+/* 거래 카드 */
 .history-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 0;
-  margin-bottom: 16px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
   display: flex;
   align-items: stretch;
   gap: 0;
-  position: relative;
 }
-.history-thumb {
-  width: 80px;
-  height: 80px;
+
+.history-card:hover {
+  transform: translateY(-2px);
+}
+
+.type-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.type-badge.buy { background: #1e90ff; color: white; }
+.type-badge.delivery { background: #4caf50; color: white; }
+
+.post-content {
+  flex: 1;
+}
+.post-content h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* 액션 버튼 */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.review-btn, .report-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
   border-radius: 8px;
-  background: #eee;
-  overflow: hidden;
-  flex-shrink: 0;
-  margin: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-btn { background: #222; color: white; }
+.report-btn { background: #fff3f3; color: #d32f2f; border: 1px solid #d32f2f; }
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
-.history-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
-.history-body {
-  flex: 1;
-  padding: 16px 16px 16px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .participation-container {
+    padding: 10px;
+  }
+  .history-card {
+    padding: 15px;
+  }
+  .post-content h3 {
+    font-size: 16px;
+  }
 }
-.history-date {
-  font-size: 13px;
-  color: #aaa;
-  font-weight: 500;
-}
-.history-rating-badge {
-  margin-left: 8px;
-  font-size: 12px;
-  color: #f39c12;
-  background: #fffbe8;
-  border-radius: 8px;
-  padding: 2px 8px;
-  vertical-align: middle;
-  font-weight: 600;
-}
-.history-title-text {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 4px 0 2px;
-}
-.history-info {
-  font-size: 13px;
-  color: #666;
-}
-.history-btn-row {
-  margin-top: 12px;
-  display: flex;
-  gap: 8px;
-}
-.review-btn {
-  background: #222;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.report-btn {
-  background: #fff3f3;
-  color: #d32f2f;
-  border: 1px solid #d32f2f;
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.eval-btn {
-  background: #e8f4ff;
-  color: #1976d2;
-  border: 1px solid #1976d2;
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+
+/* 이미지 숨김 (이미지 태그가 아예 없음) */
+.history-card img,
+.history-card .history-card-thumbnail {
+  display: none !important;
 }
