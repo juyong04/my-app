@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { NotificationProvider } from './Context/NotificationContext';
 import GlobalNotification from './Components/GlobalNotification';
 import { doc, getDoc, collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { onAuthStateChanged, setPersistence, signOut, inMemoryPersistence } from 'firebase/auth';
+import { onAuthStateChanged, setPersistence, signOut, browserLocalPersistence } from 'firebase/auth';
 import { db, auth } from './firebase';
 
 import BottomNav from './Layout/nav';
@@ -35,24 +35,24 @@ function App() {
   const [selectedGroupbuyPost, setSelectedGroupbuyPost] = useState(null);
   const [selectedGroupdeliveryPost, setSelectedGroupdeliveryPost] = useState(null);
 
-  useEffect(() => {
-    setPersistence(auth, inMemoryPersistence).then(() => {
-      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-        if (currentUser) {
-          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-          if (userDoc.exists() && userDoc.data().approved) {
-            setUser(currentUser);
-          } else {
-            setUser(null);
-          }
+useEffect(() => {
+  setPersistence(auth, browserLocalPersistence).then(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists() && userDoc.data().approved) {
+          setUser(currentUser);
         } else {
           setUser(null);
         }
-        setLoadingAuth(false);
-      });
-      return unsubscribe;
+      } else {
+        setUser(null);
+      }
+      setLoadingAuth(false);
     });
-  }, []);
+    return unsubscribe;
+  });
+}, []);
 
   useEffect(() => {
     if (!user) return;

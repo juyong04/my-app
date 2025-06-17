@@ -197,7 +197,17 @@ function GroupbuyDetailPage({ post, goBack }) {
           <div className="info-item"><strong>모집 마감일</strong><div>{post.deadline?.replace('T', ' ')}</div></div>
           <div className="info-item"><strong>총 금액</strong><div>{post.totalPrice} 원</div></div>
           <div className="info-item"><strong>1인당 금액</strong><div>{perPersonPrice} 원</div></div>
-          <div className="info-item"><strong>설명</strong><div>{post.description}</div></div>
+          <div
+              className="info-item"
+              style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'pre-line',
+              }}
+            >
+              <strong>상세 설명</strong><br />
+              {post.description}
+            </div>
         </div>
 
         <div className="meeting-map-card">

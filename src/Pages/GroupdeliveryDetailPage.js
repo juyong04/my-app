@@ -154,7 +154,17 @@ function GroupdeliveryDetailPage({ post, goBack }) {
             </div>
           )}
           <div className="info-item"><strong>모집 마감</strong>{post.deadline?.replace('T', ' ')}</div>
-          <div className="info-item"><strong>상세 설명</strong>{post.description}</div>
+          <div
+            className="info-item"
+            style={{
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            <strong>상세 설명</strong><br />
+            {post.description}
+          </div>
         </div>
 
         <div className="meeting-map-card">
